@@ -8,7 +8,7 @@
 
 | Sprint | Status | Início | Conclusão | Progresso |
 |--------|--------|--------|-----------|-----------|
-| Sprint 1 - Quick Wins | 🚧 Em Progresso | 25/11/2024 | - | 1/4 (25%) |
+| Sprint 1 - Quick Wins | 🚧 Em Progresso | 25/11/2024 | - | 2/4 (50%) |
 | Sprint 2 - Engajamento | 📅 Planejada | - | - | 0/4 |
 | Sprint 3 - Descoberta | 📅 Planejada | - | - | 0/4 |
 | Sprint 4 - Colaboração Avançada | 📅 Planejada | - | - | 0/4 |
@@ -30,7 +30,7 @@
 | # | Feature | Status | Arquivo Task | Prioridade |
 |---|---------|--------|--------------|------------|
 | 1.1 | Sistema de Tags básico | ✅ Concluída | [TASK-001.md](./TASK-001-tags-system.md) | 🔴 Alta |
-| 1.2 | Favoritos/Bookmarks | ⏳ Pendente | [TASK-002.md](./TASK-002-favorites.md) | 🔴 Alta |
+| 1.2 | Favoritos/Bookmarks | ✅ Concluída | [TASK-002.md](./TASK-002-favorites.md) | 🔴 Alta |
 | 1.3 | Dark Mode | ⏳ Pendente | [TASK-003.md](./TASK-003-dark-mode.md) | 🟡 Média |
 | 1.4 | Preview Markdown em Tempo Real | ⏳ Pendente | [TASK-004.md](./TASK-004-markdown-preview.md) | 🟡 Média |
 
@@ -100,9 +100,9 @@
 ## 📊 Métricas de Progresso
 
 **Sprint 1:**
-- [x] Tasks concluídas: 1/4 (25%) ████░░░░░░░░
+- [x] Tasks concluídas: 2/4 (50%) ████████░░░░
 - [x] TASK-001: ✅ Sistema de Tags (9.5h)
-- [ ] TASK-002: ⏳ Favoritos
+- [x] TASK-002: ✅ Favoritos/Bookmarks (8h)
 - [ ] TASK-003: ⏳ Dark Mode
 - [ ] TASK-004: ⏳ Preview Markdown
 

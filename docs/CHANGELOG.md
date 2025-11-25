@@ -10,9 +10,30 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### 🚧 Em Desenvolvimento
-- Sistema de favoritos/bookmarks
 - Dark mode
 - Preview markdown em tempo real
+
+---
+
+## [0.3.0] - 2024-11-25
+
+### ✨ Adicionado
+- **TASK-002: Sistema de Favoritos/Bookmarks Completo**
+  - Backend: Modelo Favorite com relacionamento User-Item
+  - Backend: FavoriteService com 4 métodos (toggle, get, check, ids)
+  - Backend: 4 endpoints REST funcionando
+  - Frontend: Hook useFavorites para gerenciar estado
+  - Frontend: Componente FavoriteButton com ícone de coração
+  - Frontend: Aba "Favoritos" com contador dinâmico
+  - Frontend: Componente FavoritesView com loading e estado vazio
+  - UX: Visual minimalista (cinza → vermelho)
+  - Integração: Botão em todos os cards de itens
+
+### 🐛 Corrigido
+- Coluna screenshotUrl alterada de TEXT para LONGTEXT
+- Suporte para imagens grandes em comentários (até 4GB)
+- API de favoritos agora retorna comments e tags completos
+- TagDisplay na aba favoritos com clickable=false
 
 ---
 
