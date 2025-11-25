@@ -3,6 +3,7 @@ import { Item } from './Item';
 import { Comment } from './Comment';
 import { Tag } from './Tag';
 import { ItemTag } from './ItemTag';
+import { Favorite } from './Favorite';
 
 // Associations
 User.hasMany(Item, { foreignKey: 'authorId', as: 'items' });
@@ -29,4 +30,12 @@ Tag.belongsToMany(Item, {
     as: 'items',
 });
 
-export { User, Item, Comment, Tag, ItemTag };
+// User <-> Favorite
+User.hasMany(Favorite, { foreignKey: 'userId', as: 'favorites' });
+Favorite.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// Item <-> Favorite
+Item.hasMany(Favorite, { foreignKey: 'itemId', as: 'favorites' });
+Favorite.belongsTo(Item, { foreignKey: 'itemId', as: 'item' });
+
+export { User, Item, Comment, Tag, ItemTag, Favorite };

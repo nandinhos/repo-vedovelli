@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/database';
-import { User, Item, Comment, Tag } from './models';
+import { User, Item, Comment, Tag, Favorite } from './models';
 import { TagService } from './services/tagService';
+import { FavoriteService } from './services/favoriteService';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -281,6 +282,95 @@ app.get('/api/items/:id/tags', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Failed to fetch item tags'
+        });
+    }
+});
+
+// ============= FAVORITE ROUTES =============
+
+// Toggle favorito
+app.post('/api/favorites/toggle', async (req, res) => {
+    try {
+        const { userId, itemId } = req.body;
+        
+        if (!userId || !itemId) {
+            return res.status(400).json({
+                success: false,
+                error: 'userId e itemId são obrigatórios'
+            });
+        }
+        
+        const result = await FavoriteService.toggleFavorite(userId, itemId);
+        
+        res.json({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        console.error('Error in POST /api/favorites/toggle:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to toggle favorite'
+        });
+    }
+});
+
+// Buscar favoritos do usuário (itens completos)
+app.get('/api/favorites/user/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const items = await FavoriteService.getUserFavorites(userId);
+        
+        res.json({
+            success: true,
+            data: items,
+            meta: {
+                total: items.length
+            }
+        });
+    } catch (error) {
+        console.error('Error in GET /api/favorites/user/:userId:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch user favorites'
+        });
+    }
+});
+
+// Buscar IDs dos favoritos do usuário (para UI)
+app.get('/api/favorites/user/:userId/ids', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const ids = await FavoriteService.getUserFavoriteIds(userId);
+        
+        res.json({
+            success: true,
+            data: ids
+        });
+    } catch (error) {
+        console.error('Error in GET /api/favorites/user/:userId/ids:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch favorite IDs'
+        });
+    }
+});
+
+// Verificar se item está favoritado
+app.get('/api/favorites/check/:userId/:itemId', async (req, res) => {
+    try {
+        const { userId, itemId } = req.params;
+        const isFavorited = await FavoriteService.isFavorited(userId, itemId);
+        
+        res.json({
+            success: true,
+            isFavorited
+        });
+    } catch (error) {
+        console.error('Error in GET /api/favorites/check:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to check favorite status'
         });
     }
 });

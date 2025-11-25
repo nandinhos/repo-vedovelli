@@ -32,7 +32,8 @@ import {
   MessageCircle,
   Image as ImageIcon,
   Camera,
-  Upload
+  Upload,
+  Heart
 } from 'lucide-react';
 import {
   User,
@@ -51,6 +52,8 @@ import { UserProfileModal } from './components/UserProfileModal';
 import { TagInput } from './components/TagInput';
 import { TagCloud } from './components/TagCloud';
 import { TagDisplay } from './components/TagDisplay';
+import { FavoriteButton } from './components/FavoriteButton';
+import { useFavorites } from './hooks/useFavorites';
 
 // --- MOCK DATA ---
 
@@ -230,6 +233,187 @@ export const useFetch = <T>(url: string) => {
   }
 ];
 
+// Favorites View Component
+const FavoritesView: React.FC<any> = ({ 
+  userId, 
+  favoriteIds,
+  onToggleFavorite,
+  onItemClick,
+  expandedId,
+  currentUser,
+  onAddComment,
+  onEditComment,
+  onDeleteComment,
+  canEditItem,
+  handleOpenEdit,
+  handleDeleteItem
+}) => {
+  const [favorites, setFavorites] = useState<RepositoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (userId) {
+      loadFavorites();
+    }
+  }, [userId, favoriteIds]);
+
+  const loadFavorites = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/favorites/user/${userId}`);
+      const result = await response.json();
+      
+      if (result.success) {
+        setFavorites(result.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar favoritos:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+        <p className="text-gray-500 mt-4">Carregando favoritos...</p>
+      </div>
+    );
+  }
+
+  if (favorites.length === 0) {
+    return (
+      <div className="text-center py-20 bg-white rounded-xl border border-gray-200">
+        <Heart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          Nenhum favorito ainda
+        </h3>
+        <p className="text-gray-500">
+          Clique no ❤️ em qualquer item para salvá-lo aqui!
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <Heart className="text-red-500 fill-current" size={28} />
+          Meus Favoritos ({favorites.length})
+        </h2>
+      </div>
+      
+      <div className="grid grid-cols-1 gap-4">
+        {favorites.map(item => (
+          <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+            <div className="p-5">
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full uppercase tracking-wide
+                                  ${item.type === 'snippet' ? 'bg-indigo-100 text-indigo-700' : ''}
+                                  ${item.type === 'file' ? 'bg-emerald-100 text-emerald-700' : ''}
+                                  ${item.type === 'link' ? 'bg-sky-100 text-sky-700' : ''}
+                              `}>
+                      {item.category}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm line-clamp-2 mb-3">{item.description}</p>
+
+                  {item.tags && item.tags.length > 0 && (
+                    <div className="mb-3">
+                      <TagDisplay 
+                        tags={item.tags} 
+                        size="sm"
+                        clickable={false}
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-1.5">
+                      <UserIcon size={14} />
+                      <span>{item.authorName}</span>
+                    </div>
+                    <div>{new Date(item.createdAt).toLocaleDateString()}</div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 shrink-0 ml-2">
+                  {currentUser && (
+                    <FavoriteButton
+                      itemId={item.id}
+                      userId={currentUser.id}
+                      isFavorited={true}
+                      onToggle={onToggleFavorite}
+                      size="sm"
+                    />
+                  )}
+                  
+                  <button
+                    type="button"
+                    onClick={() => onItemClick(item.id)}
+                    className={`p-2 rounded-lg transition-colors ${expandedId === item.id
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                      }`}
+                    title="Visualizar detalhes"
+                  >
+                    <Eye size={18} />
+                  </button>
+
+                  <div className="relative group/tooltip">
+                    <button
+                      type="button"
+                      onClick={(e) => handleOpenEdit(item, e)}
+                      disabled={!canEditItem(item)}
+                      className={`p-2 rounded-lg transition-colors ${canEditItem(item)
+                        ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 cursor-pointer'
+                        : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                        }`}
+                    >
+                      <FilePenLine size={18} />
+                    </button>
+                  </div>
+
+                  <div className="relative group/tooltip">
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteItem(item.id, e)}
+                      disabled={!canEditItem(item)}
+                      className={`p-2 rounded-lg transition-colors ${canEditItem(item)
+                        ? 'bg-red-50 text-red-600 hover:bg-red-100 cursor-pointer'
+                        : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                        }`}
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {expandedId === item.id && (
+              <ItemDetail
+                item={item}
+                currentUser={currentUser}
+                onAddComment={onAddComment}
+                onEditComment={onEditComment}
+                onDeleteComment={onDeleteComment}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
   const [usersDb, setUsersDb] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -237,7 +421,7 @@ export default function App() {
 
   const [items, setItems] = useState<RepositoryItem[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'snippets' | 'files' | 'links' | 'contacts'>('snippets');
+  const [activeTab, setActiveTab] = useState<'snippets' | 'files' | 'links' | 'contacts' | 'favorites'>('snippets');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   
@@ -246,6 +430,9 @@ export default function App() {
   const [popularTags, setPopularTags] = useState<Tag[]>([]);
   const [selectedFilterTags, setSelectedFilterTags] = useState<string[]>([]);
   const [newItemTags, setNewItemTags] = useState<string[]>([]);
+  
+  // Favorites Hook
+  const { favoriteIds, isFavorited, toggleFavorite } = useFavorites(currentUser?.id || '');
 
   // Fetch Data from API
   useEffect(() => {
@@ -915,6 +1102,18 @@ export default function App() {
           >
             <Users size={18} /> Contatos / Interação
           </button>
+          {currentUser && (
+            <button
+              onClick={() => setActiveTab('favorites')}
+              className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'favorites'
+                ? 'border-red-600 text-red-700 bg-red-50'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                }`}
+            >
+              <Heart size={18} className={activeTab === 'favorites' ? 'fill-current' : ''} /> 
+              Favoritos ({favoriteIds.length})
+            </button>
+          )}
         </div>
 
         {/* Filters & Search */}
@@ -986,7 +1185,23 @@ export default function App() {
         )}
 
         {/* Content List */}
-        {activeTab !== 'contacts' ? (
+        {activeTab === 'favorites' ? (
+          // FAVORITES TAB CONTENT
+          <FavoritesView 
+            userId={currentUser?.id || ''} 
+            favoriteIds={favoriteIds}
+            onToggleFavorite={toggleFavorite}
+            onItemClick={(itemId) => setExpandedId(expandedId === itemId ? null : itemId)}
+            expandedId={expandedId}
+            currentUser={currentUser}
+            onAddComment={handleAddComment}
+            onEditComment={handleEditComment}
+            onDeleteComment={handleDeleteComment}
+            canEditItem={canEditItem}
+            handleOpenEdit={handleOpenEdit}
+            handleDeleteItem={handleDeleteItem}
+          />
+        ) : activeTab !== 'contacts' ? (
           <div className="grid grid-cols-1 gap-4">
             {filteredItems.length > 0 ? (
               filteredItems.map(item => (
@@ -1049,6 +1264,17 @@ export default function App() {
 
                       {/* Action Buttons */}
                       <div className="flex flex-col gap-2 shrink-0 ml-2">
+                        {/* Favorite Button - Show if user is logged in */}
+                        {currentUser && (
+                          <FavoriteButton
+                            itemId={item.id}
+                            userId={currentUser.id}
+                            isFavorited={isFavorited(item.id)}
+                            onToggle={toggleFavorite}
+                            size="sm"
+                          />
+                        )}
+                        
                         {/* View Button - Always Visible/Enabled */}
                         <button
                           type="button"
