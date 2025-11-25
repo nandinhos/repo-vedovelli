@@ -8,7 +8,7 @@
 
 | Sprint | Status | Início | Conclusão | Progresso |
 |--------|--------|--------|-----------|-----------|
-| Sprint 1 - Quick Wins | ⏳ Pendente | - | - | 0/4 |
+| Sprint 1 - Quick Wins | 🚧 Em Progresso | 25/11/2024 | - | 1/4 (25%) |
 | Sprint 2 - Engajamento | 📅 Planejada | - | - | 0/4 |
 | Sprint 3 - Descoberta | 📅 Planejada | - | - | 0/4 |
 | Sprint 4 - Colaboração Avançada | 📅 Planejada | - | - | 0/4 |
