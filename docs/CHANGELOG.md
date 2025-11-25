@@ -10,10 +10,41 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### 🚧 Em Desenvolvimento
-- Sistema de tags para categorização de itens
 - Sistema de favoritos/bookmarks
 - Dark mode
 - Preview markdown em tempo real
+
+---
+
+## [0.2.0] - 2024-11-25
+
+### ✨ Adicionado
+- **TASK-001: Sistema de Tags Completo**
+  - Backend: Modelos Tag e ItemTag
+  - Backend: TagService com métodos de busca e sincronização
+  - Backend: 5 endpoints REST para gerenciar tags
+  - Frontend: Componente TagInput com autocomplete
+  - Frontend: Componente TagCloud visual sutil
+  - Frontend: Componente TagDisplay nos cards
+  - Frontend: Filtro por múltiplas tags
+  - Integração completa nos modais de criação/edição
+
+### 🔄 Modificado
+- App.tsx: Integração do sistema de tags
+- types.ts: Adicionada interface Tag
+- vite.config.ts: Configurado proxy para backend
+
+### 🐛 Corrigido
+- IDE reiniciando durante desenvolvimento (file watchers otimizados)
+- Configurações de performance do VSCode
+- Proxy do Vite para comunicação com backend
+
+### 📚 Documentação
+- Criada estrutura completa de documentação (15 arquivos)
+- TASK-001-TESTING.md: Checklist de validação
+- TROUBLESHOOTING.md: Guia de problemas comuns
+- BEST_PRACTICES.md: Padrões de código
+- GETTING_STARTED.md: Guia de início rápido
 
 ---
 
