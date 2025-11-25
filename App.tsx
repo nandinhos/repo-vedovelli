@@ -43,10 +43,14 @@ import {
   LANGUAGES,
   LinkItem,
   SnippetItem,
-  FileItem
+  FileItem,
+  Tag
 } from './types';
 import { ItemDetail } from './components/ItemDetail';
 import { UserProfileModal } from './components/UserProfileModal';
+import { TagInput } from './components/TagInput';
+import { TagCloud } from './components/TagCloud';
+import { TagDisplay } from './components/TagDisplay';
 
 // --- MOCK DATA ---
 
@@ -236,14 +240,22 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'snippets' | 'files' | 'links' | 'contacts'>('snippets');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
+  
+  // Tags State
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+  const [popularTags, setPopularTags] = useState<Tag[]>([]);
+  const [selectedFilterTags, setSelectedFilterTags] = useState<string[]>([]);
+  const [newItemTags, setNewItemTags] = useState<string[]>([]);
 
   // Fetch Data from API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [usersRes, itemsRes] = await Promise.all([
+        const [usersRes, itemsRes, tagsRes, popularTagsRes] = await Promise.all([
           fetch('/api/users'),
-          fetch('/api/items')
+          fetch('/api/items'),
+          fetch('/api/tags'),
+          fetch('/api/tags/popular')
         ]);
 
         if (usersRes.ok) {
@@ -254,6 +266,16 @@ export default function App() {
         if (itemsRes.ok) {
           const itemsData = await itemsRes.json();
           setItems(itemsData);
+        }
+
+        if (tagsRes.ok) {
+          const tagsData = await tagsRes.json();
+          setAllTags(tagsData.data || []);
+        }
+
+        if (popularTagsRes.ok) {
+          const popularTagsData = await popularTagsRes.json();
+          setPopularTags(popularTagsData.data || []);
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -414,6 +436,7 @@ export default function App() {
     setNewItemYoutube('');
     setNewItemCategory(CATEGORIES[0]);
     setNewItemLanguage('javascript');
+    setNewItemTags([]);
 
     // Set default type based on active tab
     if (activeTab === 'files') setUploadType('file');
@@ -432,6 +455,7 @@ export default function App() {
     setNewItemRepo(item.repository || '');
     setNewItemWebsite(item.website || '');
     setNewItemYoutube(item.youtube || '');
+    setNewItemTags(item.tags?.map(t => t.name) || []);
     setUploadType(item.type);
 
     if (item.type === 'snippet') {
@@ -523,12 +547,15 @@ export default function App() {
 
     try {
       let response;
+      let savedItemId;
+      
       if (editingItem) {
         response = await fetch(`/api/items/${editingItem.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(itemData)
         });
+        savedItemId = editingItem.id;
       } else {
         response = await fetch('/api/items', {
           method: 'POST',
@@ -539,18 +566,36 @@ export default function App() {
 
       if (response.ok) {
         const savedItem = await response.json();
-        // Ensure comments are preserved or initialized
-        const itemWithComments = {
-          ...savedItem,
-          comments: editingItem ? editingItem.comments : [],
-          authorName: currentUser.name // Optimistic update for author name
-        };
+        savedItemId = savedItem.id;
 
-        if (editingItem) {
-          setItems(prev => prev.map(item => item.id === editingItem.id ? itemWithComments : item));
-        } else {
-          setItems(prev => [itemWithComments, ...prev]);
+        // Update tags for the item
+        if (newItemTags.length > 0) {
+          await fetch(`/api/items/${savedItemId}/tags`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tags: newItemTags })
+          });
         }
+
+        // Fetch updated item with tags
+        const updatedItemRes = await fetch(`/api/items`);
+        if (updatedItemRes.ok) {
+          const allItems = await updatedItemRes.json();
+          setItems(allItems);
+        }
+
+        // Refresh tags
+        const tagsRes = await fetch('/api/tags');
+        const popularTagsRes = await fetch('/api/tags/popular');
+        if (tagsRes.ok) {
+          const tagsData = await tagsRes.json();
+          setAllTags(tagsData.data || []);
+        }
+        if (popularTagsRes.ok) {
+          const popularTagsData = await popularTagsRes.json();
+          setPopularTags(popularTagsData.data || []);
+        }
+
         setIsUploadModalOpen(false);
       }
     } catch (error) {
@@ -719,14 +764,24 @@ export default function App() {
     // Category Filter
     if (selectedCategory !== 'Todos' && item.category !== selectedCategory) return false;
 
+    // Tag Filter - item must have ALL selected tags
+    if (selectedFilterTags.length > 0) {
+      const itemTagNames = item.tags?.map(t => t.name) || [];
+      const hasAllTags = selectedFilterTags.every(filterTag => 
+        itemTagNames.includes(filterTag)
+      );
+      if (!hasAllTags) return false;
+    }
+
     // Search Filter
     const searchLower = searchTerm.toLowerCase();
     const matchesTitle = item.title.toLowerCase().includes(searchLower);
     const matchesDesc = item.description.toLowerCase().includes(searchLower);
     const matchesAuthor = item.authorName.toLowerCase().includes(searchLower);
     const matchesLang = item.type === 'snippet' && item.language.toLowerCase().includes(searchLower);
+    const matchesTags = item.tags?.some(tag => tag.name.toLowerCase().includes(searchLower));
 
-    return matchesTitle || matchesDesc || matchesAuthor || matchesLang;
+    return matchesTitle || matchesDesc || matchesAuthor || matchesLang || matchesTags;
   });
 
   const filteredUsers = usersDb.filter(user => {
@@ -736,6 +791,22 @@ export default function App() {
     return user.name.toLowerCase().includes(searchLower) ||
       (user.bio && user.bio.toLowerCase().includes(searchLower));
   });
+
+  // --- TAG HANDLERS ---
+
+  const handleTagClick = (tag: Tag) => {
+    if (selectedFilterTags.includes(tag.name)) {
+      // Remove tag from filter
+      setSelectedFilterTags(prev => prev.filter(t => t !== tag.name));
+    } else {
+      // Add tag to filter
+      setSelectedFilterTags(prev => [...prev, tag.name]);
+    }
+  };
+
+  const clearTagFilters = () => {
+    setSelectedFilterTags([]);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f3f4f6]">
@@ -892,6 +963,28 @@ export default function App() {
           )}
         </div>
 
+        {/* Tag Cloud - Show popular tags */}
+        {activeTab !== 'contacts' && popularTags.length > 0 && (
+          <div className="mb-6">
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-sm text-gray-500">Filtrar por:</span>
+              <TagCloud
+                tags={popularTags}
+                onTagClick={handleTagClick}
+                selectedTags={selectedFilterTags}
+              />
+              {selectedFilterTags.length > 0 && (
+                <button
+                  onClick={clearTagFilters}
+                  className="text-xs text-gray-500 hover:text-gray-700 underline"
+                >
+                  Limpar ({selectedFilterTags.length})
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Content List */}
         {activeTab !== 'contacts' ? (
           <div className="grid grid-cols-1 gap-4">
@@ -929,6 +1022,17 @@ export default function App() {
                           {item.title}
                         </h3>
                         <p className="text-gray-600 text-sm line-clamp-2 mb-3">{item.description}</p>
+
+                        {/* Tags Display */}
+                        {item.tags && item.tags.length > 0 && (
+                          <div className="mb-3">
+                            <TagDisplay
+                              tags={item.tags}
+                              onTagClick={handleTagClick}
+                              size="sm"
+                            />
+                          </div>
+                        )}
 
                         <div className="flex items-center gap-4 text-xs text-gray-500">
                           <div className="flex items-center gap-1.5">
@@ -1334,6 +1438,20 @@ export default function App() {
                   placeholder="Para que serve este item? Descreva brevemente."
                   value={newItemDesc}
                   onChange={(e) => setNewItemDesc(e.target.value)}
+                />
+              </div>
+
+              {/* Tags Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tags <span className="text-gray-500 font-normal">(Opcional - facilita a busca)</span>
+                </label>
+                <TagInput
+                  selectedTags={newItemTags}
+                  onChange={setNewItemTags}
+                  suggestions={allTags}
+                  maxTags={10}
+                  placeholder="Ex: react, typescript, api..."
                 />
               </div>
 

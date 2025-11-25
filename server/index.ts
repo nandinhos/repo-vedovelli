@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/database';
-import { User, Item, Comment } from './models';
+import { User, Item, Comment, Tag } from './models';
+import { TagService } from './services/tagService';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,7 +25,7 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
-// Get all items with authors and comments
+// Get all items with authors, comments, and tags
 app.get('/api/items', async (req, res) => {
     try {
         const items = await Item.findAll({
@@ -34,7 +35,8 @@ app.get('/api/items', async (req, res) => {
                     model: Comment,
                     as: 'comments',
                     include: [{ model: User, as: 'user' }]
-                }
+                },
+                { model: Tag, as: 'tags' }
             ],
             order: [['createdAt', 'DESC']]
         });
@@ -161,6 +163,125 @@ app.put('/api/users/:id', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ error: 'Failed to update user' });
+    }
+});
+
+// ============= TAG ROUTES =============
+
+// Get popular tags - MUST come before /:slug route
+app.get('/api/tags/popular', async (req, res) => {
+    try {
+        const { limit = 20 } = req.query;
+        const tags = await TagService.getPopular(Number(limit));
+        
+        res.json({
+            success: true,
+            data: tags
+        });
+    } catch (error) {
+        console.error('Error in GET /api/tags/popular:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch popular tags' 
+        });
+    }
+});
+
+// Get items by tag slug
+app.get('/api/tags/:slug/items', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const result = await TagService.getItemsByTag(slug);
+        
+        res.json({
+            success: true,
+            data: result.items,
+            meta: {
+                tagName: result.tag.name,
+                totalItems: result.count
+            }
+        });
+    } catch (error) {
+        console.error('Error in GET /api/tags/:slug/items:', error);
+        res.status(404).json({ 
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to fetch items by tag'
+        });
+    }
+});
+
+// Get all tags - comes after specific routes
+app.get('/api/tags', async (req, res) => {
+    try {
+        const { search, limit = 50 } = req.query;
+        
+        let tags;
+        if (search) {
+            tags = await TagService.search(search as string, Number(limit));
+        } else {
+            tags = await TagService.getAll(Number(limit));
+        }
+        
+        res.json({
+            success: true,
+            data: tags
+        });
+    } catch (error) {
+        console.error('Error in GET /api/tags:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch tags' 
+        });
+    }
+});
+
+// Update tags for an item
+app.put('/api/items/:id/tags', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { tags } = req.body;
+        
+        if (!Array.isArray(tags)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Tags must be an array'
+            });
+        }
+        
+        const updatedTags = await TagService.syncItemTags(id, tags);
+        
+        res.json({
+            success: true,
+            data: {
+                itemId: id,
+                tags: updatedTags
+            }
+        });
+    } catch (error) {
+        console.error('Error in PUT /api/items/:id/tags:', error);
+        res.status(500).json({ 
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to update item tags'
+        });
+    }
+});
+
+// Get tags for a specific item
+app.get('/api/items/:id/tags', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const tags = await TagService.getItemTags(id);
+        
+        res.json({
+            success: true,
+            data: tags
+        });
+    } catch (error) {
+        console.error('Error in GET /api/items/:id/tags:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Failed to fetch item tags'
+        });
     }
 });
 
