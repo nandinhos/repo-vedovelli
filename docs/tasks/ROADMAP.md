@@ -29,7 +29,7 @@
 
 | # | Feature | Status | Arquivo Task | Prioridade |
 |---|---------|--------|--------------|------------|
-| 1.1 | Sistema de Tags básico | ⏳ Pendente | [TASK-001.md](./TASK-001-tags-system.md) | 🔴 Alta |
+| 1.1 | Sistema de Tags básico | ✅ Concluída | [TASK-001.md](./TASK-001-tags-system.md) | 🔴 Alta |
 | 1.2 | Favoritos/Bookmarks | ⏳ Pendente | [TASK-002.md](./TASK-002-favorites.md) | 🔴 Alta |
 | 1.3 | Dark Mode | ⏳ Pendente | [TASK-003.md](./TASK-003-dark-mode.md) | 🟡 Média |
 | 1.4 | Preview Markdown em Tempo Real | ⏳ Pendente | [TASK-004.md](./TASK-004-markdown-preview.md) | 🟡 Média |
@@ -100,9 +100,11 @@
 ## 📊 Métricas de Progresso
 
 **Sprint 1:**
-- [ ] Tasks concluídas: 0/4 (0%)
-- [ ] Testes passando: -
-- [ ] Cobertura de código: -
+- [x] Tasks concluídas: 1/4 (25%) ████░░░░░░░░
+- [x] TASK-001: ✅ Sistema de Tags (9.5h)
+- [ ] TASK-002: ⏳ Favoritos
+- [ ] TASK-003: ⏳ Dark Mode
+- [ ] TASK-004: ⏳ Preview Markdown
 
 **Sprint 2:**
 - [ ] Tasks concluídas: 0/4 (0%)

@@ -2,9 +2,11 @@
 
 **Sprint:** 1 - Quick Wins  
 **Prioridade:** 🔴 Alta  
-**Status:** ⏳ Pendente  
-**Estimativa:** 6-8 horas  
-**Responsável:** TBD
+**Status:** ✅ Concluída  
+**Tempo Real:** 9.5 horas  
+**Responsável:** Time Vedovelli  
+**Data Conclusão:** 25/11/2024  
+**Commits:** 3659b53, 61cc46a
 
 ---
 
