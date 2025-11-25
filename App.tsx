@@ -54,6 +54,8 @@ import { TagCloud } from './components/TagCloud';
 import { TagDisplay } from './components/TagDisplay';
 import { FavoriteButton } from './components/FavoriteButton';
 import { useFavorites } from './hooks/useFavorites';
+import { ThemeToggle } from './components/ThemeToggle';
+import { useTheme } from './hooks/useTheme';
 
 // --- MOCK DATA ---
 
@@ -433,6 +435,9 @@ export default function App() {
   
   // Favorites Hook
   const { favoriteIds, isFavorited, toggleFavorite } = useFavorites(currentUser?.id || '');
+  
+  // Theme Hook
+  const { theme, toggleTheme } = useTheme();
 
   // Fetch Data from API
   useEffect(() => {
@@ -996,7 +1001,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f3f4f6]">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
       {/* User Profile Modal */}
       <UserProfileModal
         isOpen={!!viewingUser}
@@ -1005,7 +1010,7 @@ export default function App() {
       />
 
       {/* Header */}
-      <header className="bg-indigo-900 text-white shadow-lg sticky top-0 z-20">
+      <header className="bg-indigo-900 dark:bg-gray-800 text-white shadow-lg sticky top-0 z-20 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
@@ -1015,6 +1020,7 @@ export default function App() {
               <h1 className="font-bold text-lg leading-tight">Repositório Vedovelli</h1>
               <p className="text-xs text-indigo-300 font-medium">Comunidade Dev</p>
             </div>
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
 
           <div className="flex items-center gap-4">
@@ -1065,12 +1071,12 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap border-b border-gray-300 mb-8">
+        <div className="flex flex-wrap border-b border-gray-300 dark:border-gray-700 mb-8">
           <button
             onClick={() => setActiveTab('snippets')}
             className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'snippets'
-              ? 'border-indigo-600 text-indigo-700 bg-indigo-50'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+              ? 'border-indigo-600 text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
           >
             <Code size={18} /> Snippets
@@ -1127,18 +1133,18 @@ export default function App() {
               placeholder={activeTab === 'contacts' ? "Buscar usuário por nome ou cargo..." : "Buscar por título, autor ou linguagem..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all shadow-sm outline-none"
+              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 transition-all shadow-sm outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
           {activeTab !== 'contacts' && (
             <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-              <div className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm whitespace-nowrap">
+              <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm whitespace-nowrap">
                 <Filter size={16} className="text-gray-500" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="bg-transparent border-none text-sm text-gray-700 focus:ring-0 outline-none cursor-pointer"
+                  className="bg-transparent border-none text-sm text-gray-700 dark:text-gray-300 focus:ring-0 outline-none cursor-pointer"
                 >
                   <option value="Todos">Todas Categorias</option>
                   {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
