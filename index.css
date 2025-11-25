@@ -1,1 +1,273 @@
 @import "tailwindcss";
+
+/* ============================================
+   DARK MODE - COMPLETE STYLES
+   ============================================ */
+
+.dark {
+  color-scheme: dark;
+}
+
+/* ========== BASE ========== */
+.dark body {
+  background-color: rgb(17 24 39); /* gray-900 */
+  color: rgb(243 244 246); /* gray-100 */
+}
+
+/* ========== BACKGROUNDS ========== */
+.dark .bg-gray-50,
+.dark .bg-\[#f3f4f6\],
+.dark [class*="bg-gray-50"] {
+  background-color: rgb(17 24 39) !important; /* gray-900 */
+}
+
+.dark .bg-white,
+.dark [class*="bg-white"] {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+}
+
+.dark .bg-gray-100,
+.dark [class*="bg-gray-100"] {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark .bg-gray-200 {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+/* Header */
+.dark .bg-indigo-900 {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+}
+
+/* ========== BORDERS ========== */
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .divide-gray-200 {
+  border-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark .border-gray-100 {
+  border-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+/* ========== TEXT COLORS ========== */
+.dark .text-gray-900 {
+  color: rgb(243 244 246) !important; /* gray-100 */
+}
+
+.dark .text-gray-800 {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+.dark .text-gray-700 {
+  color: rgb(209 213 219) !important; /* gray-300 */
+}
+
+.dark .text-gray-600 {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+.dark .text-gray-500 {
+  color: rgb(107 114 128) !important; /* gray-500 */
+}
+
+/* ========== FORM INPUTS ========== */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="search"],
+.dark input[type="url"],
+.dark textarea,
+.dark select {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+  color: rgb(243 244 246) !important; /* gray-100 */
+  border-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  background-color: rgb(55 65 81) !important;
+  border-color: rgb(99 102 241) !important; /* indigo-500 */
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgb(107 114 128) !important; /* gray-500 */
+}
+
+.dark input:disabled,
+.dark textarea:disabled,
+.dark select:disabled {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+  color: rgb(107 114 128) !important; /* gray-500 */
+  cursor: not-allowed;
+}
+
+/* ========== ACTION BUTTONS ========== */
+/* View Button (Indigo) */
+.dark .bg-indigo-50 {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark .text-indigo-600 {
+  color: rgb(129 140 248) !important; /* indigo-400 */
+}
+
+.dark .hover\:bg-indigo-100:hover {
+  background-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+/* Edit Button (Amber) */
+.dark .bg-amber-50 {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark .text-amber-600 {
+  color: rgb(251 191 36) !important; /* amber-400 */
+}
+
+.dark .hover\:bg-amber-100:hover {
+  background-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+/* Delete Button (Red) - Ajustar para ficar igual */
+.dark .bg-red-50 {
+  background-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+.dark .text-red-600 {
+  color: rgb(248 113 113) !important; /* red-400 */
+}
+
+.dark .hover\:bg-red-100:hover {
+  background-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+/* Generic hover */
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-gray-200:hover {
+  background-color: rgb(75 85 99) !important; /* gray-600 */
+}
+
+/* ========== BADGES (CATEGORY TAGS) ========== */
+.dark .bg-indigo-100 {
+  background-color: rgba(99, 102, 241, 0.2) !important; /* indigo with opacity */
+  color: rgb(199 210 254) !important; /* indigo-200 */
+}
+
+.dark .text-indigo-700 {
+  color: rgb(199 210 254) !important; /* indigo-200 */
+}
+
+.dark .bg-emerald-100 {
+  background-color: rgba(16, 185, 129, 0.2) !important; /* emerald with opacity */
+  color: rgb(167 243 208) !important; /* emerald-200 */
+}
+
+.dark .text-emerald-700 {
+  color: rgb(167 243 208) !important; /* emerald-200 */
+}
+
+.dark .bg-sky-100 {
+  background-color: rgba(14, 165, 233, 0.2) !important; /* sky with opacity */
+  color: rgb(186 230 253) !important; /* sky-200 */
+}
+
+.dark .text-sky-700 {
+  color: rgb(186 230 253) !important; /* sky-200 */
+}
+
+.dark .bg-purple-100 {
+  background-color: rgba(168, 85, 247, 0.2) !important;
+  color: rgb(233 213 255) !important;
+}
+
+.dark .bg-red-100 {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: rgb(254 202 202) !important;
+}
+
+.dark .bg-yellow-100 {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  color: rgb(254 240 138) !important;
+}
+
+/* ========== CODE BLOCKS ========== */
+.dark pre,
+.dark code {
+  background-color: rgb(17 24 39) !important; /* gray-900 */
+  color: rgb(243 244 246) !important;
+  border-color: rgb(55 65 81) !important;
+}
+
+/* ========== MODALS ========== */
+.dark .fixed.inset-0.bg-black {
+  background-color: rgba(0, 0, 0, 0.8) !important; /* Darker backdrop */
+}
+
+/* Modal content */
+.dark .rounded-xl.shadow-2xl {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+  border: 1px solid rgb(55 65 81); /* gray-700 */
+}
+
+/* Modal headers */
+.dark .border-b {
+  border-color: rgb(55 65 81) !important;
+}
+
+/* ========== LABELS ========== */
+.dark label {
+  color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* ========== SHADOWS (reduce in dark mode) ========== */
+.dark .shadow-sm,
+.dark .shadow,
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl,
+.dark .shadow-2xl {
+  box-shadow: 0 0 0 1px rgb(55 65 81) !important;
+}
+
+/* ========== TABS - Padronizar todas ========== */
+.dark .bg-indigo-50,
+.dark .bg-emerald-50,
+.dark .bg-sky-50,
+.dark .bg-purple-50 {
+  background-color: rgb(31 41 55) !important; /* gray-800 - igual à tab Snippets */
+}
+
+/* ========== FIX REMAINING WHITE BACKGROUNDS ========== */
+/* ItemDetail expanded area */
+.dark > div,
+.dark div[class*="bg-"] {
+  /* Força todos os elementos com bg-white, bg-gray-50, etc */
+}
+
+/* Force all white and light backgrounds to dark */
+.dark * {
+  /* Remove qualquer fundo branco remanescente */
+}
+
+.dark *[style*="background-color: rgb(255, 255, 255)"],
+.dark *[style*="background-color: white"],
+.dark *[style*="background: white"],
+.dark *[style*="background: rgb(255, 255, 255)"] {
+  background-color: rgb(31 41 55) !important;
+}
+
+/* Specific fixes for expanded item views */
+.dark .rounded-xl,
+.dark .rounded-lg,
+.dark .rounded-md {
+  background-color: rgb(31 41 55) !important;
+}
+
+/* Override inline styles if any */
+.dark [style*="background"] {
+  background-color: rgb(31 41 55) !important;
+}
