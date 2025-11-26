@@ -1018,7 +1018,7 @@ export default function App() {
             </div>
             <div>
               <h1 className="font-bold text-lg leading-tight">Repositório Vedovelli</h1>
-              <p className="text-xs text-indigo-300 font-medium">Comunidade Dev</p>
+              <p className="text-xs text-indigo-300 dark:text-gray-400 font-medium">Comunidade Dev</p>
             </div>
             <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
@@ -1028,7 +1028,7 @@ export default function App() {
               <div className="flex items-center gap-4">
                 <div className="hidden md:flex flex-col items-end">
                   <span className="text-sm font-medium">{currentUser.name}</span>
-                  <span className="text-xs text-indigo-300 px-2 py-0.5 bg-indigo-800 rounded-full uppercase tracking-wider text-[10px]">
+                  <span className="text-xs text-indigo-300 dark:text-gray-400 px-2 py-0.5 bg-indigo-800 dark:bg-gray-700 rounded-full uppercase tracking-wider text-[10px]">
                     {currentUser.role === UserRole.ADMIN ? 'Administrador' : 'Colaborador'}
                   </span>
                 </div>
@@ -1037,17 +1037,17 @@ export default function App() {
                     <img src={currentUser.avatar} alt={currentUser.name} className="w-9 h-9 rounded-full border-2 border-indigo-400 cursor-pointer" />
                   </button>
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl py-2 text-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 transform translate-y-2 group-hover:translate-y-0 border border-gray-100">
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl py-2 text-gray-800 dark:text-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 transform translate-y-2 group-hover:translate-y-0 border border-gray-100 dark:border-gray-700">
                     <button
                       onClick={handleOpenProfile}
-                      className="w-full text-left px-4 py-2 hover:bg-indigo-50 flex items-center gap-2 text-sm"
+                      className="w-full text-left px-4 py-2 hover:bg-indigo-50 dark:hover:bg-gray-700 flex items-center gap-2 text-sm"
                     >
                       <Settings size={16} /> Meu Perfil
                     </button>
-                    <div className="h-px bg-gray-100 my-1"></div>
+                    <div className="h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2 text-sm"
+                      className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-red-700/20 text-red-600 flex items-center gap-2 text-sm"
                     >
                       <LogOut size={16} /> Sair
                     </button>
@@ -1057,7 +1057,7 @@ export default function App() {
             ) : (
               <button
                 onClick={handleOpenLogin}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-900 rounded-md font-medium hover:bg-indigo-50 transition-colors shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-900 dark:bg-indigo-500 dark:text-white rounded-md font-medium hover:bg-indigo-50 dark:hover:bg-indigo-600 transition-colors shadow-sm"
               >
                 <LogIn size={18} />
                 <span>Entrar</span>
@@ -1076,7 +1076,7 @@ export default function App() {
             onClick={() => setActiveTab('snippets')}
             className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'snippets'
               ? 'border-indigo-600 text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-gray-800'
-              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
           >
             <Code size={18} /> Snippets
@@ -1084,8 +1084,8 @@ export default function App() {
           <button
             onClick={() => setActiveTab('files')}
             className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'files'
-              ? 'border-emerald-600 text-emerald-700 bg-emerald-50'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+              ? 'border-emerald-600 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
           >
             <FileText size={18} /> Arquivos
@@ -1093,8 +1093,8 @@ export default function App() {
           <button
             onClick={() => setActiveTab('links')}
             className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'links'
-              ? 'border-sky-600 text-sky-700 bg-sky-50'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+              ? 'border-sky-600 text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
           >
             <LinkIcon size={18} /> Links Úteis
@@ -1102,8 +1102,8 @@ export default function App() {
           <button
             onClick={() => setActiveTab('contacts')}
             className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'contacts'
-              ? 'border-purple-600 text-purple-700 bg-purple-50'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+              ? 'border-purple-600 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-gray-800'
+              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
               }`}
           >
             <Users size={18} /> Contatos / Interação
@@ -1112,11 +1112,11 @@ export default function App() {
             <button
               onClick={() => setActiveTab('favorites')}
               className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'favorites'
-                ? 'border-red-600 text-red-700 bg-red-50'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                ? 'border-red-600 text-red-700 dark:text-red-400 bg-red-50 dark:bg-gray-800'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
                 }`}
             >
-              <Heart size={18} className={activeTab === 'favorites' ? 'fill-current' : ''} /> 
+              <Heart size={18} className={activeTab === 'favorites' ? 'fill-current' : ''} />
               Favoritos ({favoriteIds.length})
             </button>
           )}
@@ -1126,7 +1126,7 @@ export default function App() {
         <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center">
           <div className="relative w-full md:w-96 group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search size={18} className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+              <Search size={18} className="text-gray-400 dark:text-gray-500 group-focus-within:text-indigo-500 transition-colors" />
             </div>
             <input
               type="text"
@@ -1140,7 +1140,7 @@ export default function App() {
           {activeTab !== 'contacts' && (
             <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
               <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm whitespace-nowrap">
-                <Filter size={16} className="text-gray-500" />
+                <Filter size={16} className="text-gray-500 dark:text-gray-400" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -1155,9 +1155,9 @@ export default function App() {
                 <button
                   onClick={handleOpenUpload}
                   className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg font-medium shadow-md transition-all transform hover:scale-105 whitespace-nowrap
-                            ${activeTab === 'snippets' ? 'bg-indigo-600 hover:bg-indigo-700' : ''}
-                            ${activeTab === 'files' ? 'bg-emerald-600 hover:bg-emerald-700' : ''}
-                            ${activeTab === 'links' ? 'bg-sky-600 hover:bg-sky-700' : ''}
+                            ${activeTab === 'snippets' ? 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600' : ''}
+                            ${activeTab === 'files' ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600' : ''}
+                            ${activeTab === 'links' ? 'bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600' : ''}
                         `}
                 >
                   <Plus size={18} />
@@ -1172,7 +1172,7 @@ export default function App() {
         {activeTab !== 'contacts' && popularTags.length > 0 && (
           <div className="mb-6">
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="text-sm text-gray-500">Filtrar por:</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Filtrar por:</span>
               <TagCloud
                 tags={popularTags}
                 onTagClick={handleTagClick}
@@ -1181,7 +1181,7 @@ export default function App() {
               {selectedFilterTags.length > 0 && (
                 <button
                   onClick={clearTagFilters}
-                  className="text-xs text-gray-500 hover:text-gray-700 underline"
+                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
                 >
                   Limpar ({selectedFilterTags.length})
                 </button>
@@ -1211,38 +1211,38 @@ export default function App() {
           <div className="grid grid-cols-1 gap-4">
             {filteredItems.length > 0 ? (
               filteredItems.map(item => (
-                <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow duration-300">
                   <div className="p-5">
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full uppercase tracking-wide
-                                                ${item.type === 'snippet' ? 'bg-indigo-100 text-indigo-700' : ''}
-                                                ${item.type === 'file' ? 'bg-emerald-100 text-emerald-700' : ''}
-                                                ${item.type === 'link' ? 'bg-sky-100 text-sky-700' : ''}
+                                                ${item.type === 'snippet' ? 'bg-indigo-100 text-indigo-700 dark:bg-gray-700 dark:text-indigo-400' : ''}
+                                                ${item.type === 'file' ? 'bg-emerald-100 text-emerald-700 dark:bg-gray-700 dark:text-emerald-400' : ''}
+                                                ${item.type === 'link' ? 'bg-sky-100 text-sky-700 dark:bg-gray-700 dark:text-sky-400' : ''}
                                             `}>
                             {item.category}
                           </span>
                           {item.type === 'snippet' && (
-                            <span className="flex items-center gap-1 text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">
+                            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
                               <Code size={12} /> {item.language}
                             </span>
                           )}
                           {item.type === 'file' && (
-                            <span className="flex items-center gap-1 text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">
+                            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
                               <FileText size={12} /> {item.fileExtension}
                             </span>
                           )}
                           {item.type === 'link' && (
-                            <span className="flex items-center gap-1 text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">
+                            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded">
                               <Globe size={12} /> {new URL(item.url).hostname}
                             </span>
                           )}
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-indigo-600 transition-colors">
                           {item.title}
                         </h3>
-                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">{item.description}</p>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">{item.description}</p>
 
                         {/* Tags Display */}
                         {item.tags && item.tags.length > 0 && (
@@ -1255,7 +1255,7 @@ export default function App() {
                           </div>
                         )}
 
-                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                           <div className="flex items-center gap-1.5">
                             <UserIcon size={14} />
                             <span>{item.authorName}</span>
@@ -1287,7 +1287,7 @@ export default function App() {
                           onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
                           className={`p-2 rounded-lg transition-colors ${expandedId === item.id
                             ? 'bg-indigo-600 text-white shadow-md'
-                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-gray-700 dark:text-indigo-400 dark:hover:bg-gray-600'
                             }`}
                           title="Visualizar detalhes"
                         >
@@ -1301,8 +1301,8 @@ export default function App() {
                             onClick={(e) => handleOpenEdit(item, e)}
                             disabled={!canEditItem(item)}
                             className={`p-2 rounded-lg transition-colors ${canEditItem(item)
-                              ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 cursor-pointer'
-                              : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                              ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-gray-700 dark:text-amber-400 dark:hover:bg-gray-600 cursor-pointer'
+                              : 'bg-gray-100 text-gray-300 dark:bg-gray-700/50 dark:text-gray-500 cursor-not-allowed'
                               }`}
                           >
                             <FilePenLine size={18} />
@@ -1321,8 +1321,8 @@ export default function App() {
                             onClick={(e) => handleDeleteItem(item.id, e)}
                             disabled={!canEditItem(item)}
                             className={`p-2 rounded-lg transition-colors ${canEditItem(item)
-                              ? 'bg-red-50 text-red-600 hover:bg-red-100 cursor-pointer'
-                              : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                              ? 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-gray-700 dark:text-red-400 dark:hover:bg-gray-600 cursor-pointer'
+                              : 'bg-gray-100 text-gray-300 dark:bg-gray-700/50 dark:text-gray-500 cursor-not-allowed'
                               }`}
                           >
                             <Trash2 size={18} />
@@ -1350,12 +1350,12 @@ export default function App() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-20 bg-white rounded-xl border border-gray-200 border-dashed">
-                <div className="bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="text-gray-400" size={24} />
+              <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 border-dashed">
+                <div className="bg-gray-50 dark:bg-gray-700/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="text-gray-400 dark:text-gray-500" size={24} />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900">Nenhum item encontrado</h3>
-                <p className="text-gray-500 mt-1">Tente ajustar os filtros ou buscar por outro termo.</p>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Nenhum item encontrado</h3>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">Tente ajustar os filtros ou buscar por outro termo.</p>
               </div>
             )}
           </div>
@@ -1367,42 +1367,42 @@ export default function App() {
                 <div
                   key={user.id}
                   onClick={() => setViewingUser(user)}
-                  className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all cursor-pointer group relative overflow-hidden"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all cursor-pointer group relative overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 w-1 h-full bg-purple-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
                   <div className="flex items-start gap-4">
-                    <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full border-2 border-purple-100 group-hover:border-purple-300 transition-colors" />
+                    <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full border-2 border-purple-100 dark:border-gray-700 group-hover:border-purple-300 transition-colors" />
                     <div>
-                      <h3 className="font-bold text-gray-900 text-lg group-hover:text-purple-700 transition-colors">{user.name}</h3>
+                      <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">{user.name}</h3>
                       {user.role === UserRole.ADMIN && (
-                        <span className="inline-block px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold uppercase tracking-wider rounded-full mb-1">Admin</span>
+                        <span className="inline-block px-2 py-0.5 bg-purple-100 dark:bg-gray-700 text-purple-700 dark:text-purple-400 text-[10px] font-bold uppercase tracking-wider rounded-full mb-1">Admin</span>
                       )}
-                      <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
                         <Briefcase size={14} />
                         {user.bio || 'Membro da Comunidade'}
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-gray-100 flex gap-3">
+                  <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700 flex gap-3">
                     {user.socialLinks?.github && (
-                      <div className="p-2 text-gray-400 bg-gray-50 rounded-lg group-hover:bg-gray-800 group-hover:text-white transition-colors" title="GitHub">
+                      <div className="p-2 text-gray-400 bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400 rounded-lg group-hover:bg-gray-800 group-hover:text-white transition-colors" title="GitHub">
                         <Github size={18} />
                       </div>
                     )}
                     {user.socialLinks?.linkedin && (
-                      <div className="p-2 text-gray-400 bg-gray-50 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors" title="LinkedIn">
+                      <div className="p-2 text-gray-400 bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors" title="LinkedIn">
                         <Linkedin size={18} />
                       </div>
                     )}
                     {user.socialLinks?.instagram && (
-                      <div className="p-2 text-gray-400 bg-gray-50 rounded-lg group-hover:bg-pink-600 group-hover:text-white transition-colors" title="Instagram">
+                      <div className="p-2 text-gray-400 bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400 rounded-lg group-hover:bg-pink-600 group-hover:text-white transition-colors" title="Instagram">
                         <Instagram size={18} />
                       </div>
                     )}
                     {user.socialLinks?.whatsapp && (
-                      <div className="p-2 text-gray-400 bg-gray-50 rounded-lg group-hover:bg-green-500 group-hover:text-white transition-colors" title="WhatsApp">
+                      <div className="p-2 text-gray-400 bg-gray-50 dark:bg-gray-700/50 dark:text-gray-400 rounded-lg group-hover:bg-green-500 group-hover:text-white transition-colors" title="WhatsApp">
                         <MessageCircle size={18} />
                       </div>
                     )}
@@ -1417,12 +1417,12 @@ export default function App() {
                 </div>
               ))
             ) : (
-              <div className="col-span-full text-center py-20 bg-white rounded-xl border border-gray-200 border-dashed">
-                <div className="bg-gray-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="text-gray-400" size={24} />
+              <div className="col-span-full text-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 border-dashed">
+                <div className="bg-gray-50 dark:bg-gray-700 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="text-gray-400 dark:text-gray-500" size={24} />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900">Nenhum contato público encontrado</h3>
-                <p className="text-gray-500 mt-1">Seja o primeiro a compartilhar seu perfil!</p>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Nenhum contato público encontrado</h3>
+                <p className="text-gray-500 dark:text-gray-400 mt-1">Seja o primeiro a compartilhar seu perfil!</p>
               </div>
             )}
           </div>
@@ -1433,17 +1433,17 @@ export default function App() {
       {/* Confirmation Modal (Replaces window.confirm) */}
       {confirmModal.isOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn transform scale-100 transition-transform">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn transform scale-100 transition-transform">
             <div className="p-6 text-center">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600 shadow-sm">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600 dark:text-red-400 shadow-sm">
                 <AlertTriangle size={24} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{confirmModal.title}</h3>
-              <p className="text-gray-600 mb-6 text-sm leading-relaxed">{confirmModal.message}</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">{confirmModal.title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">{confirmModal.message}</p>
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
-                  className="px-5 py-2.5 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors bg-white border border-gray-200 shadow-sm"
+                  className="px-5 py-2.5 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 shadow-sm"
                 >
                   Cancelar
                 </button>
@@ -1463,26 +1463,26 @@ export default function App() {
       {/* Admin Deletion Reason Modal */}
       {deleteReasonModal.isOpen && (
         <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn transform scale-100 transition-transform">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn transform scale-100 transition-transform">
             <div className="p-6">
-              <div className="flex items-center gap-3 mb-4 text-amber-600">
+              <div className="flex items-center gap-3 mb-4 text-amber-600 dark:text-amber-400">
                 <MessageCircleWarning size={24} />
                 <h3 className="text-lg font-bold">Moderação de Conteúdo</h3>
               </div>
-              <p className="text-gray-600 mb-4 text-sm">
+              <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">
                 Como administrador, você deve fornecer uma justificativa para a exclusão deste comentário. O usuário verá este motivo.
               </p>
               <textarea
                 value={deleteReasonModal.reason}
                 onChange={(e) => setDeleteReasonModal(prev => ({ ...prev, reason: e.target.value }))}
                 placeholder="Ex: Linguagem ofensiva, spam, conteúdo irrelevante..."
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none mb-4 text-sm min-h-[100px]"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none mb-4 text-sm min-h-[100px]"
                 autoFocus
               />
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => setDeleteReasonModal(prev => ({ ...prev, isOpen: false, reason: '' }))}
-                  className="px-4 py-2 text-gray-700 font-medium hover:bg-gray-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   Cancelar
                 </button>
@@ -1501,55 +1501,55 @@ export default function App() {
       {/* Login Modal */}
       {isLoginModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all scale-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all scale-100">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">Acesso Restrito</h2>
-              <button onClick={() => setIsLoginModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Acesso Restrito</h2>
+              <button onClick={() => setIsLoginModalOpen(false)} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                 <X size={24} />
               </button>
             </div>
 
-            <p className="text-gray-600 mb-8">Escolha um perfil para simular o acesso à plataforma:</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-8">Escolha um perfil para simular o acesso à plataforma:</p>
 
             <div className="space-y-4">
               <button
                 onClick={() => confirmLogin('USER')}
-                className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md transition-all group"
+                className="w-full flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700/50 hover:shadow-md transition-all group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                    <UserIcon size={24} className="text-indigo-600" />
+                  <div className="bg-indigo-100 dark:bg-gray-700 p-3 rounded-full group-hover:bg-indigo-200 dark:group-hover:bg-gray-600 transition-colors">
+                    <UserIcon size={24} className="text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div className="text-left">
-                    <div className="font-bold text-gray-900">Usuário Padrão</div>
-                    <div className="text-sm text-gray-500">Edita apenas o próprio conteúdo</div>
+                    <div className="font-bold text-gray-900 dark:text-gray-100">Usuário Padrão</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Edita apenas o próprio conteúdo</div>
                   </div>
                 </div>
-                <div className="text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
                   <CheckCircle size={20} />
                 </div>
               </button>
 
               <button
                 onClick={() => confirmLogin('ADMIN')}
-                className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 hover:shadow-md transition-all group"
+                className="w-full flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-500 dark:hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-gray-700/50 hover:shadow-md transition-all group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="bg-purple-100 p-3 rounded-full group-hover:bg-purple-200 transition-colors">
-                    <ShieldCheck size={24} className="text-purple-600" />
+                  <div className="bg-purple-100 dark:bg-gray-700 p-3 rounded-full group-hover:bg-purple-200 dark:group-hover:bg-gray-600 transition-colors">
+                    <ShieldCheck size={24} className="text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="text-left">
-                    <div className="font-bold text-gray-900">Administrador</div>
-                    <div className="text-sm text-gray-500">Acesso total (Gerencia tudo)</div>
+                    <div className="font-bold text-gray-900 dark:text-gray-100">Administrador</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Acesso total (Gerencia tudo)</div>
                   </div>
                 </div>
-                <div className="text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
                   <CheckCircle size={20} />
                 </div>
               </button>
             </div>
 
-            <div className="mt-8 text-center text-xs text-gray-400">
+            <div className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
               Ambiente de teste seguro • Nenhuma senha necessária
             </div>
           </div>
@@ -1559,9 +1559,9 @@ export default function App() {
       {/* Upload/Edit Modal */}
       {isUploadModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 {editingItem ? (
                   <>
                     <FilePenLine className="text-amber-500" /> Editar {uploadType === 'snippet' ? 'Snippet' : uploadType === 'file' ? 'Arquivo' : 'Link'}
@@ -1572,18 +1572,18 @@ export default function App() {
                   </>
                 )}
               </h2>
-              <button onClick={() => setIsUploadModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setIsUploadModalOpen(false)} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                 <X size={24} />
               </button>
             </div>
 
             <form onSubmit={handleSubmitItem} className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Título</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Título</label>
                 <input
                   required
                   type="text"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow"
                   placeholder="Ex: Autenticação JWT em Node.js"
                   value={newItemTitle}
                   onChange={(e) => setNewItemTitle(e.target.value)}
@@ -1592,9 +1592,9 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoria</label>
                   <select
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none"
                     value={newItemCategory}
                     onChange={(e) => setNewItemCategory(e.target.value)}
                   >
@@ -1604,9 +1604,9 @@ export default function App() {
 
                 {uploadType === 'snippet' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Linguagem</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Linguagem</label>
                     <select
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                      className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none"
                       value={newItemLanguage}
                       onChange={(e) => setNewItemLanguage(e.target.value)}
                     >
@@ -1618,7 +1618,7 @@ export default function App() {
 
               {uploadType === 'snippet' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Código Fonte</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Código Fonte</label>
                   <textarea
                     required
                     rows={8}
@@ -1631,12 +1631,12 @@ export default function App() {
               )}
 
               {uploadType === 'file' && (
-                <div className="p-8 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center cursor-pointer group">
-                  <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <div className="p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-center cursor-pointer group">
+                  <div className="w-12 h-12 bg-indigo-100 dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                     <FileText size={24} />
                   </div>
-                  <p className="text-sm text-gray-600 font-medium">Clique para selecionar o arquivo</p>
-                  <p className="text-xs text-gray-400 mt-1">PDF, ZIP, PNG, JS, YML (Max 10MB)</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Clique para selecionar o arquivo</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">PDF, ZIP, PNG, JS, YML (Max 10MB)</p>
                   {/* Fake input for visual purposes */}
                   <input type="file" className="hidden" />
                 </div>
@@ -1644,15 +1644,15 @@ export default function App() {
 
               {uploadType === 'link' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">URL do Link</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL do Link</label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <LinkIcon size={18} className="text-gray-400" />
+                      <LinkIcon size={18} className="text-gray-400 dark:text-gray-500" />
                     </div>
                     <input
                       required
                       type="url"
-                      className="w-full pl-10 pr-3 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow"
+                      className="w-full pl-10 pr-3 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow"
                       placeholder="https://..."
                       value={newItemUrl}
                       onChange={(e) => setNewItemUrl(e.target.value)}
@@ -1662,11 +1662,11 @@ export default function App() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição Curta</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição Curta</label>
                 <textarea
                   required
                   rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow resize-none"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow resize-none"
                   placeholder="Para que serve este item? Descreva brevemente."
                   value={newItemDesc}
                   onChange={(e) => setNewItemDesc(e.target.value)}
@@ -1675,8 +1675,8 @@ export default function App() {
 
               {/* Tags Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tags <span className="text-gray-500 font-normal">(Opcional - facilita a busca)</span>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Tags <span className="text-gray-500 dark:text-gray-400 font-normal">(Opcional - facilita a busca)</span>
                 </label>
                 <TagInput
                   selectedTags={newItemTags}
@@ -1689,17 +1689,17 @@ export default function App() {
 
               {/* Optional Resources Fields (Snippet/File only) */}
               {(uploadType === 'snippet' || uploadType === 'file') && (
-                <div className="space-y-4 pt-4 border-t border-gray-100">
-                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Recursos Adicionais (Opcional)</h3>
+                <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Recursos Adicionais (Opcional)</h3>
 
                   <div className="grid grid-cols-1 gap-4">
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Github size={18} className="text-gray-400" />
+                        <Github size={18} className="text-gray-400 dark:text-gray-500" />
                       </div>
                       <input
                         type="url"
-                        className="w-full pl-10 pr-3 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow text-sm"
+                        className="w-full pl-10 pr-3 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow text-sm"
                         placeholder="Link do Repositório (GitHub/GitLab)"
                         value={newItemRepo}
                         onChange={(e) => setNewItemRepo(e.target.value)}
@@ -1709,11 +1709,11 @@ export default function App() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <Globe size={18} className="text-gray-400" />
+                          <Globe size={18} className="text-gray-400 dark:text-gray-500" />
                         </div>
                         <input
                           type="url"
-                          className="w-full pl-10 pr-3 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow text-sm"
+                          className="w-full pl-10 pr-3 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow text-sm"
                           placeholder="Link de Website / Demo"
                           value={newItemWebsite}
                           onChange={(e) => setNewItemWebsite(e.target.value)}
@@ -1726,7 +1726,7 @@ export default function App() {
                         </div>
                         <input
                           type="url"
-                          className="w-full pl-10 pr-3 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow text-sm"
+                          className="w-full pl-10 pr-3 p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow text-sm"
                           placeholder="Link do YouTube (Tutorial/Demo)"
                           value={newItemYoutube}
                           onChange={(e) => setNewItemYoutube(e.target.value)}
@@ -1739,19 +1739,19 @@ export default function App() {
 
             </form>
 
-            <div className="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end gap-3">
+            <div className="p-6 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 rounded-b-2xl flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setIsUploadModalOpen(false)}
-                className="px-5 py-2.5 text-gray-700 font-medium hover:bg-gray-200 rounded-lg transition-colors"
+                className="px-5 py-2.5 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSubmitItem}
-                className={`px-6 py-2.5 text-white font-medium rounded-lg shadow-lg transition-all transform active:scale-95 ${uploadType === 'file' ? 'bg-emerald-600 hover:bg-emerald-700' :
-                  uploadType === 'link' ? 'bg-sky-600 hover:bg-sky-700' :
-                    'bg-indigo-600 hover:bg-indigo-700'
+                className={`px-6 py-2.5 text-white font-medium rounded-lg shadow-lg transition-all transform active:scale-95 ${uploadType === 'file' ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600' :
+                  uploadType === 'link' ? 'bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600' :
+                    'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600'
                   }`}
               >
                 {editingItem ? 'Salvar Alterações' : 'Publicar Item'}
@@ -1764,22 +1764,22 @@ export default function App() {
       {/* Profile Settings Modal */}
       {isProfileModalOpen && currentUser && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg flex flex-col">
+            <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <Settings className="text-indigo-500" /> Meu Perfil
               </h2>
-              <button onClick={() => setIsProfileModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button onClick={() => setIsProfileModalOpen(false)} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                 <X size={24} />
               </button>
             </div>
 
             <form onSubmit={handleSaveProfile} className="p-6 space-y-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
               {/* Public Profile Toggle */}
-              <div className="flex items-center justify-between p-4 bg-purple-50 border border-purple-100 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-purple-50 dark:bg-gray-700/50 border border-purple-100 dark:border-gray-700 rounded-xl">
                 <div>
-                  <h3 className="font-semibold text-purple-900">Perfil Público</h3>
-                  <p className="text-xs text-purple-600/80">Exibir seu card na aba "Contatos/Interação"</p>
+                  <h3 className="font-semibold text-purple-900 dark:text-purple-300">Perfil Público</h3>
+                  <p className="text-xs text-purple-600/80 dark:text-purple-400/80">Exibir seu card na aba "Contatos/Interação"</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -1788,25 +1788,25 @@ export default function App() {
                     checked={editProfileData.isPublic}
                     onChange={(e) => setEditProfileData(prev => ({ ...prev, isPublic: e.target.checked }))}
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                 </label>
               </div>
 
               {/* Avatar & Bio */}
               <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Avatar</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Avatar</label>
 
                   <div className="flex items-center gap-4 mb-3">
                     <img
                       src={editProfileData.avatar || 'https://ui-avatars.com/api/?name=User&background=random'}
                       alt="Avatar Preview"
-                      className="w-16 h-16 rounded-full border-2 border-gray-200 object-cover"
+                      className="w-16 h-16 rounded-full border-2 border-gray-200 dark:border-gray-600 object-cover"
                     />
                     <button
                       type="button"
                       onClick={() => avatarInputRef.current?.click()}
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-medium transition-colors"
                     >
                       <Upload size={16} /> Carregar Imagem
                     </button>
@@ -1820,43 +1820,43 @@ export default function App() {
                   </div>
 
                   <div className="relative">
-                    <LinkIcon size={16} className="absolute top-3 left-3 text-gray-400" />
+                    <LinkIcon size={16} className="absolute top-3 left-3 text-gray-400 dark:text-gray-500" />
                     <input
                       type="url"
                       value={editProfileData.avatar}
                       onChange={(e) => setEditProfileData(prev => ({ ...prev, avatar: e.target.value }))}
                       placeholder="Ou cole uma URL de imagem..."
-                      className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="w-full pl-10 p-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Cargo / Bio Curta</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cargo / Bio Curta</label>
                   <div className="relative">
-                    <Briefcase size={16} className="absolute top-3 left-3 text-gray-400" />
+                    <Briefcase size={16} className="absolute top-3 left-3 text-gray-400 dark:text-gray-500" />
                     <input
                       type="text"
                       value={editProfileData.bio}
                       onChange={(e) => setEditProfileData(prev => ({ ...prev, bio: e.target.value }))}
                       placeholder="Ex: Full Stack Developer"
-                      className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-sm"
+                      className="w-full pl-10 p-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none text-sm"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3 border-t border-gray-100 pt-4">
-                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Redes Sociais (Opcional)</h4>
+              <div className="space-y-3 border-t border-gray-100 dark:border-gray-700 pt-4">
+                <h4 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Redes Sociais (Opcional)</h4>
 
                 <div className="relative">
-                  <Github size={18} className="absolute top-3 left-3 text-gray-600" />
+                  <Github size={18} className="absolute top-3 left-3 text-gray-600 dark:text-gray-400" />
                   <input
                     type="url"
                     value={editProfileData.github}
                     onChange={(e) => setEditProfileData(prev => ({ ...prev, github: e.target.value }))}
                     placeholder="https://github.com/seu-usuario"
-                    className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none text-sm"
+                    className="w-full pl-10 p-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none text-sm"
                   />
                 </div>
 
@@ -1867,7 +1867,7 @@ export default function App() {
                     value={editProfileData.linkedin}
                     onChange={(e) => setEditProfileData(prev => ({ ...prev, linkedin: e.target.value }))}
                     placeholder="https://linkedin.com/in/seu-usuario"
-                    className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    className="w-full pl-10 p-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                   />
                 </div>
 
@@ -1878,7 +1878,7 @@ export default function App() {
                     value={editProfileData.instagram}
                     onChange={(e) => setEditProfileData(prev => ({ ...prev, instagram: e.target.value }))}
                     placeholder="https://instagram.com/seu-usuario"
-                    className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none text-sm"
+                    className="w-full pl-10 p-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none text-sm"
                   />
                 </div>
 
@@ -1889,16 +1889,16 @@ export default function App() {
                     value={editProfileData.whatsapp}
                     onChange={(e) => setEditProfileData(prev => ({ ...prev, whatsapp: e.target.value }))}
                     placeholder="WhatsApp (5511999999999)"
-                    className="w-full pl-10 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+                    className="w-full pl-10 p-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
+              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => setIsProfileModalOpen(false)}
-                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   Cancelar
                 </button>

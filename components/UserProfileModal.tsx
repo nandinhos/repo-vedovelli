@@ -13,7 +13,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, user
 
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform scale-100 transition-all">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform scale-100 transition-all">
         
         {/* Header / Banner */}
         <div className="h-32 bg-gradient-to-r from-indigo-600 to-purple-600 relative">
@@ -32,18 +32,18 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, user
                 <img 
                     src={user.avatar} 
                     alt={user.name} 
-                    className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover bg-gray-200" 
+                    className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 shadow-lg object-cover bg-gray-200"
                 />
                 {user.role === UserRole.ADMIN && (
-                    <div className="absolute bottom-1 right-1 bg-purple-100 text-purple-700 p-1.5 rounded-full border-2 border-white shadow-sm" title="Administrador">
+                    <div className="absolute bottom-1 right-1 bg-purple-100 dark:bg-gray-700 text-purple-700 dark:text-purple-400 p-1.5 rounded-full border-2 border-white dark:border-gray-800 shadow-sm" title="Administrador">
                         <ShieldCheck size={18} />
                     </div>
                 )}
             </div>
 
             {/* Name & Bio */}
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">{user.name}</h2>
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-6 bg-gray-50 px-3 py-1 rounded-full">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{user.name}</h2>
+            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm mb-6 bg-gray-50 dark:bg-gray-700/50 px-3 py-1 rounded-full">
                 <Briefcase size={14} />
                 <span>{user.bio || 'Membro da Comunidade'}</span>
             </div>
@@ -55,7 +55,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, user
                         href={user.socialLinks.github} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="flex items-center justify-center gap-2 p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors shadow-sm"
+                        className="flex items-center justify-center gap-2 p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors shadow-sm"
                     >
                         <Github size={18} /> GitHub
                     </a>
@@ -97,13 +97,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, user
 
             {/* Fallback if no socials */}
             {(!user.socialLinks || Object.values(user.socialLinks).every(v => !v)) && (
-                <div className="w-full p-4 bg-gray-50 rounded-xl border border-gray-100 text-gray-400 text-sm italic">
+                <div className="w-full p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-700 text-gray-400 dark:text-gray-500 text-sm italic">
                     Este usuário ainda não compartilhou suas redes.
                 </div>
             )}
 
-            <div className="mt-6 pt-6 border-t border-gray-100 w-full flex justify-center">
-                <div className="flex items-center gap-2 text-gray-400 text-xs">
+            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700 w-full flex justify-center">
+                <div className="flex items-center gap-2 text-gray-400 dark:text-gray-500 text-xs">
                     <Mail size={14} />
                     <span>{user.email}</span>
                 </div>

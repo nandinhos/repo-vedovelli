@@ -52,7 +52,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
         transition-all duration-200
         ${isFavorited 
           ? 'text-red-500 hover:text-red-600' 
-          : 'text-gray-300 hover:text-red-500'
+          : 'text-gray-300 dark:text-gray-600 hover:text-red-500'
         }
         ${isLoading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}
       `}

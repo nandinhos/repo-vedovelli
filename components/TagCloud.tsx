@@ -58,8 +58,8 @@ export const TagCloud: React.FC<TagCloudProps> = ({
               transition-all duration-200
               focus:outline-none focus:ring-1 focus:ring-blue-300
               ${isSelected 
-                ? 'bg-blue-600 text-white font-medium' 
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 font-normal'
+                ? 'bg-blue-600 dark:bg-blue-500 text-white font-medium'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 font-normal'
               }
             `}
             title={`${tag.usageCount || 0} ${tag.usageCount === 1 ? 'item' : 'itens'}`}
