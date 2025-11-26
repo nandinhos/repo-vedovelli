@@ -1,0 +1,114 @@
+{
+  "name": "Auth System Tests",
+  "requests": [
+    {
+      "name": "1. Register New User",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/register",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "name": "João Silva",
+        "email": "joao@example.com",
+        "password": "senha123",
+        "bio": "Desenvolvedor Frontend"
+      }
+    },
+    {
+      "name": "2. Login SUPERADMIN",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/login",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "email": "admin@example.com",
+        "password": "admin123"
+      }
+    },
+    {
+      "name": "3. Get My Profile",
+      "method": "GET",
+      "url": "http://localhost:3000/api/auth/me",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN_HERE"
+      }
+    },
+    {
+      "name": "4. List Pending Users",
+      "method": "GET",
+      "url": "http://localhost:3000/api/admin/users/pending",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPERADMIN_TOKEN"
+      }
+    },
+    {
+      "name": "5. Approve User",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/admin/users/USER_ID/approve",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPERADMIN_TOKEN"
+      }
+    },
+    {
+      "name": "6. Reject User",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/admin/users/USER_ID/reject",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPERADMIN_TOKEN",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "reason": "Perfil incompleto"
+      }
+    },
+    {
+      "name": "7. Change User Role",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/admin/users/USER_ID/role",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPERADMIN_TOKEN",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "role": "MODERATOR"
+      }
+    },
+    {
+      "name": "8. Get System Stats",
+      "method": "GET",
+      "url": "http://localhost:3000/api/admin/stats",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPERADMIN_TOKEN"
+      }
+    },
+    {
+      "name": "9. Create Item (Authenticated)",
+      "method": "POST",
+      "url": "http://localhost:3000/api/items",
+      "headers": {
+        "Authorization": "Bearer YOUR_USER_TOKEN",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "snippet",
+        "title": "Hello World",
+        "description": "Um exemplo básico",
+        "category": "Frontend",
+        "authorId": "YOUR_USER_ID",
+        "authorName": "João Silva",
+        "language": "javascript",
+        "code": "console.log('Hello World');"
+      }
+    },
+    {
+      "name": "10. List All Users (Admin)",
+      "method": "GET",
+      "url": "http://localhost:3000/api/admin/users",
+      "headers": {
+        "Authorization": "Bearer YOUR_SUPERADMIN_TOKEN"
+      }
+    }
+  ]
+}
