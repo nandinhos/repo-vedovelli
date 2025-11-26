@@ -45,9 +45,9 @@ export const TagDisplay: React.FC<TagDisplayProps> = ({
           className={`
             inline-flex items-center gap-1
             ${sizeClasses[size]}
-            bg-gray-100 text-gray-600 rounded-full font-normal
+            bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full font-normal
             transition-all duration-200
-            ${clickable && onTagClick ? 'hover:bg-gray-200 cursor-pointer' : ''}
+            ${clickable && onTagClick ? 'hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer' : ''}
           `}
           title={clickable ? `Filtrar por #${tag.name}` : tag.name}
         >
