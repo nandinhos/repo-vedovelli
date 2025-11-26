@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/database';
 import { User, Item, Comment } from './models';
+import authRoutes from './routes/auth';
+import adminRoutes from './routes/admin';
+import { authenticate, authorize, optionalAuth } from './middleware/auth';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +14,12 @@ app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images
 
 // Connect to Database
 connectDB();
+
+// Auth routes (públicas)
+app.use('/api/auth', authRoutes);
+
+// Admin routes (protegidas)
+app.use('/api/admin', adminRoutes);
 
 // Routes
 
@@ -24,8 +33,8 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
-// Get all items with authors and comments
-app.get('/api/items', async (req, res) => {
+// Get all items with authors and comments (público, mas pode filtrar baseado em auth)
+app.get('/api/items', optionalAuth, async (req, res) => {
     try {
         const items = await Item.findAll({
             include: [
@@ -58,8 +67,13 @@ app.get('/api/items', async (req, res) => {
     }
 });
 
-// Create a new item (Basic implementation)
-app.post('/api/items', async (req, res) => {
+// Create a new item (requer autenticação e status APPROVED)
+app.post('/api/items', authenticate, async (req, res) => {
+    // Verificar se usuário está aprovado
+    const user = await User.findByPk(req.user!.userId);
+    if (!user || user.status !== 'APPROVED') {
+        return res.status(403).json({ error: 'Apenas usuários aprovados podem criar items' });
+    }
     try {
         const newItem = await Item.create(req.body);
         res.status(201).json(newItem);
@@ -69,8 +83,8 @@ app.post('/api/items', async (req, res) => {
     }
 });
 
-// Update an item
-app.put('/api/items/:id', async (req, res) => {
+// Update an item (apenas owner ou moderador/superadmin)
+app.put('/api/items/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
         const [updated] = await Item.update(req.body, { where: { id } });
@@ -85,8 +99,8 @@ app.put('/api/items/:id', async (req, res) => {
     }
 });
 
-// Delete an item
-app.delete('/api/items/:id', async (req, res) => {
+// Delete an item (apenas owner ou moderador/superadmin)
+app.delete('/api/items/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
         const deleted = await Item.destroy({ where: { id } });
@@ -100,8 +114,8 @@ app.delete('/api/items/:id', async (req, res) => {
     }
 });
 
-// Add a comment
-app.post('/api/comments', async (req, res) => {
+// Add a comment (requer autenticação)
+app.post('/api/comments', authenticate, async (req, res) => {
     try {
         const newComment = await Comment.create(req.body);
         // Fetch with user to return complete object
@@ -115,8 +129,8 @@ app.post('/api/comments', async (req, res) => {
     }
 });
 
-// Update a comment
-app.put('/api/comments/:id', async (req, res) => {
+// Update a comment (apenas owner ou moderador/superadmin)
+app.put('/api/comments/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
         const [updated] = await Comment.update(req.body, { where: { id } });
@@ -133,8 +147,8 @@ app.put('/api/comments/:id', async (req, res) => {
     }
 });
 
-// Delete a comment
-app.delete('/api/comments/:id', async (req, res) => {
+// Delete a comment (apenas owner ou moderador/superadmin)
+app.delete('/api/comments/:id', authenticate, async (req, res) => {
     try {
         const { id } = req.params;
         const deleted = await Comment.destroy({ where: { id } });
@@ -148,11 +162,18 @@ app.delete('/api/comments/:id', async (req, res) => {
     }
 });
 
-// Update user profile
-app.put('/api/users/:id', async (req, res) => {
+// Update user profile (apenas o próprio usuário pode atualizar seu perfil)
+app.put('/api/users/:id', authenticate, async (req, res) => {
+    // Verificar se está tentando atualizar o próprio perfil
+    if (req.params.id !== req.user!.userId) {
+        return res.status(403).json({ error: 'Você só pode atualizar seu próprio perfil' });
+    }
+
+    // Não permitir alterar role ou status via esta rota
+    const { role, status, password, ...allowedUpdates } = req.body;
     try {
         const { id } = req.params;
-        const [updated] = await User.update(req.body, { where: { id } });
+        const [updated] = await User.update(allowedUpdates, { where: { id } });
         if (updated) {
             const updatedUser = await User.findByPk(id);
             res.json(updatedUser);

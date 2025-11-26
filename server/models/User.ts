@@ -5,12 +5,15 @@ export class User extends Model {
     public id!: string;
     public name!: string;
     public email!: string;
+    public password!: string;
     public role!: string;
     public status!: string;
     public avatar!: string;
     public bio?: string;
     public isPublicProfile!: boolean;
     public socialLinks?: object;
+    public createdAt!: Date;
+    public updatedAt!: Date;
 }
 
 User.init({
@@ -27,9 +30,13 @@ User.init({
         allowNull: false,
         unique: true,
     },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     role: {
-        type: DataTypes.ENUM('ADMIN', 'USER', 'GUEST'),
-        defaultValue: 'USER',
+        type: DataTypes.ENUM('SUPERADMIN', 'MODERATOR', 'USER', 'GUEST'),
+        defaultValue: 'GUEST',
     },
     status: {
         type: DataTypes.ENUM('PENDING', 'APPROVED', 'REJECTED'),

@@ -1,7 +1,8 @@
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER',
-  GUEST = 'GUEST'
+  SUPERADMIN = 'SUPERADMIN',  // Acesso total, gerencia tudo
+  MODERATOR = 'MODERATOR',    // Modera conteúdo, aprova usuários
+  USER = 'USER',              // Contribuidor aprovado
+  GUEST = 'GUEST'             // Visitante/aguardando aprovação
 }
 
 export enum ApprovalStatus {
@@ -21,13 +22,19 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  password?: string; // Hash da senha (não retornado em responses)
   role: UserRole;
   status: ApprovalStatus;
   avatar: string;
   bio?: string; // Job title or short description
   isPublicProfile?: boolean; // Whether to show in Contacts tab
   socialLinks?: UserSocialLinks;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+// User sem informações sensíveis (para responses)
+export type PublicUser = Omit<User, 'password'>;
 
 export interface Comment {
   id: string;
