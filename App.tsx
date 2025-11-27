@@ -47,6 +47,11 @@ import {
 } from './types';
 import { ItemDetail } from './components/ItemDetail';
 import { UserProfileModal } from './components/UserProfileModal';
+import AuthModal from './components/AuthModal';
+import UserMenu from './components/UserMenu';
+import AdminPanel from './components/AdminPanel';
+import { useAuth } from './hooks/useAuth';
+import { permissions } from './utils/permissions';
 
 // --- MOCK DATA ---
 
@@ -227,8 +232,8 @@ export const useFetch = <T>(url: string) => {
 ];
 
 export default function App() {
+  const { user: currentUser, isAuthenticated, login, logout, isLoading } = useAuth();
   const [usersDb, setUsersDb] = useState<User[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [viewingUser, setViewingUser] = useState<User | null>(null);
 
   const [items, setItems] = useState<RepositoryItem[]>([]);
@@ -267,6 +272,7 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
 
   // Custom Confirmation Modal State
   const [confirmModal, setConfirmModal] = useState({
@@ -315,29 +321,32 @@ export default function App() {
   // Refs
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
+  // --- HELPER FUNCTIONS ---
+  
+  // Helper to get auth headers
+  const getAuthHeaders = (): HeadersInit => {
+    const token = localStorage.getItem('authToken');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    };
+  };
+
   // --- ACTIONS ---
 
   const handleOpenLogin = () => {
     setIsLoginModalOpen(true);
   };
 
-  const confirmLogin = (role: 'ADMIN' | 'USER') => {
-    // Find mock user based on role for demonstration
-    const userToLogin = role === 'ADMIN'
-      ? usersDb.find(u => u.role === UserRole.ADMIN)
-      : usersDb.find(u => u.id === 'u1');
-
-    if (userToLogin) {
-      setCurrentUser(userToLogin);
-    }
+  const handleLoginSuccess = (token: string, user: User) => {
+    login(token, user);
     setIsLoginModalOpen(false);
   };
 
   const handleLogout = () => {
-    setCurrentUser(null);
+    logout();
     setIsUploadModalOpen(false);
     setEditingItem(null);
-    setIsLoginModalOpen(false);
     setExpandedId(null);
   };
 
@@ -388,22 +397,40 @@ export default function App() {
     try {
       const response = await fetch(`/api/users/${currentUser.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(updatedUser)
       });
 
       if (response.ok) {
         const savedUser = await response.json();
-        setCurrentUser(savedUser);
+        // Update local storage and auth state
+        localStorage.setItem('currentUser', JSON.stringify(savedUser));
         setUsersDb(prev => prev.map(u => u.id === currentUser.id ? savedUser : u));
         setIsProfileModalOpen(false);
+        // Force reload to update auth state
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        console.error('Failed to update profile:', error);
+        alert(error.error || 'Erro ao atualizar perfil');
       }
     } catch (error) {
       console.error('Failed to update profile:', error);
+      alert('Erro ao atualizar perfil');
     }
   };
 
   const handleOpenUpload = () => {
+    if (!currentUser) {
+      handleOpenLogin();
+      return;
+    }
+    
+    // Verificar permissão para criar item (silencioso, botão já está oculto)
+    if (!permissions.canCreateItem(currentUser)) {
+      return;
+    }
+    
     setEditingItem(null);
     setNewItemTitle('');
     setNewItemContent('');
@@ -425,6 +452,14 @@ export default function App() {
 
   const handleOpenEdit = (item: RepositoryItem, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    
+    if (!currentUser) return;
+    
+    // Verificar permissão para editar (silencioso, botão já está desabilitado)
+    if (!permissions.canEditItem(currentUser, item)) {
+      return;
+    }
+    
     setEditingItem(item);
     setNewItemTitle(item.title);
     setNewItemDesc(item.description);
@@ -455,9 +490,8 @@ export default function App() {
     const itemToDelete = items.find(i => i.id === id);
     if (!itemToDelete) return;
 
-    if (!currentUser || (currentUser.role !== UserRole.ADMIN && currentUser.id !== itemToDelete.authorId)) {
-      // No permisson, normally button is disabled but just in case
-      return;
+    if (!currentUser || !permissions.canDeleteItem(currentUser, itemToDelete)) {
+      return; // Silencioso, botão já está desabilitado
     }
 
     // Use Custom Modal instead of window.confirm
@@ -467,7 +501,10 @@ export default function App() {
       message: 'Tem certeza que deseja excluir este item permanentemente? Esta ação não pode ser desfeita.',
       onConfirm: async () => {
         try {
-          const response = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+          const response = await fetch(`/api/items/${id}`, { 
+            method: 'DELETE',
+            headers: getAuthHeaders()
+          });
           if (response.ok) {
             setItems(prev => prev.filter(i => i.id !== id));
             if (expandedId === id) setExpandedId(null);
@@ -526,13 +563,13 @@ export default function App() {
       if (editingItem) {
         response = await fetch(`/api/items/${editingItem.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(itemData)
         });
       } else {
         response = await fetch('/api/items', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(itemData)
         });
       }
@@ -560,6 +597,11 @@ export default function App() {
 
   const handleAddComment = async (itemId: string, text: string, screenshot?: string) => {
     if (!currentUser) return;
+    
+    // Verificar permissão para criar comentário (validação de segurança)
+    if (!permissions.canCreateComment(currentUser)) {
+      return;
+    }
 
     const commentData = {
       itemId,
@@ -571,7 +613,7 @@ export default function App() {
     try {
       const response = await fetch('/api/comments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(commentData)
       });
 
@@ -598,10 +640,20 @@ export default function App() {
 
   // FIXED: Added screenshot support
   const handleEditComment = async (itemId: string, commentId: string, text: string, screenshot?: string) => {
+    if (!currentUser) return;
+    
+    // Encontrar o comentário para verificar permissão
+    const item = items.find(i => i.id === itemId);
+    const comment = item?.comments?.find(c => c.id === commentId);
+    
+    if (comment && !permissions.canEditComment(currentUser, comment.userId)) {
+      return; // Validação de segurança
+    }
+    
     try {
       const response = await fetch(`/api/comments/${commentId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ content: text, screenshotUrl: screenshot })
       });
 
@@ -622,8 +674,20 @@ export default function App() {
   };
 
   const handleDeleteComment = (itemId: string, commentId: string) => {
-    // If Admin, ask for justification
-    if (currentUser?.role === UserRole.ADMIN) {
+    if (!currentUser) return;
+    
+    // Encontrar o comentário para verificar permissão
+    const item = items.find(i => i.id === itemId);
+    const comment = item?.comments?.find(c => c.id === commentId);
+    
+    if (!comment) return;
+    
+    if (!permissions.canDeleteComment(currentUser, comment.userId)) {
+      return; // Validação de segurança
+    }
+    
+    // If Moderator/Admin, ask for justification
+    if (permissions.canModerateContent(currentUser)) {
       setDeleteReasonModal({
         isOpen: true,
         itemId,
@@ -640,7 +704,10 @@ export default function App() {
       message: 'Tem certeza que deseja excluir este comentário permanentemente?',
       onConfirm: async () => {
         try {
-          const response = await fetch(`/api/comments/${commentId}`, { method: 'DELETE' });
+          const response = await fetch(`/api/comments/${commentId}`, { 
+            method: 'DELETE',
+            headers: getAuthHeaders()
+          });
           if (response.ok) {
             setItems(prev => prev.map(item => {
               if (item.id === itemId) {
@@ -670,7 +737,7 @@ export default function App() {
     try {
       const response = await fetch(`/api/comments/${deleteReasonModal.commentId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           isDeleted: true,
           deletionReason: deleteReasonModal.reason
@@ -701,11 +768,7 @@ export default function App() {
 
 
   // --- PERMISSIONS ---
-
-  const canEditItem = (item: RepositoryItem) => {
-    if (!currentUser) return false;
-    return currentUser.role === UserRole.ADMIN || currentUser.id === item.authorId;
-  };
+  // Usando sistema de permissões centralizado
 
   // --- FILTERING ---
 
@@ -760,36 +823,15 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
-            {currentUser ? (
-              <div className="flex items-center gap-4">
-                <div className="hidden md:flex flex-col items-end">
-                  <span className="text-sm font-medium">{currentUser.name}</span>
-                  <span className="text-xs text-indigo-300 px-2 py-0.5 bg-indigo-800 rounded-full uppercase tracking-wider text-[10px]">
-                    {currentUser.role === UserRole.ADMIN ? 'Administrador' : 'Colaborador'}
-                  </span>
-                </div>
-                <div className="relative group">
-                  <button className="relative">
-                    <img src={currentUser.avatar} alt={currentUser.name} className="w-9 h-9 rounded-full border-2 border-indigo-400 cursor-pointer" />
-                  </button>
-                  {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl py-2 text-gray-800 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 transform translate-y-2 group-hover:translate-y-0 border border-gray-100">
-                    <button
-                      onClick={handleOpenProfile}
-                      className="w-full text-left px-4 py-2 hover:bg-indigo-50 flex items-center gap-2 text-sm"
-                    >
-                      <Settings size={16} /> Meu Perfil
-                    </button>
-                    <div className="h-px bg-gray-100 my-1"></div>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-2 text-sm"
-                    >
-                      <LogOut size={16} /> Sair
-                    </button>
-                  </div>
-                </div>
-              </div>
+            {isLoading ? (
+              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : currentUser ? (
+              <UserMenu 
+                user={currentUser} 
+                onLogout={handleLogout}
+                onOpenProfile={handleOpenProfile}
+                onOpenAdminPanel={() => setIsAdminPanelOpen(true)}
+              />
             ) : (
               <button
                 onClick={handleOpenLogin}
@@ -805,6 +847,28 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Banner para GUEST (conta pendente) */}
+        {currentUser && currentUser.role === UserRole.GUEST && (
+          <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <AlertTriangle className="h-5 w-5 text-yellow-400" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-yellow-800">
+                  Conta Aguardando Aprovação
+                </h3>
+                <div className="mt-2 text-sm text-yellow-700">
+                  <p>
+                    Sua conta está pendente de aprovação por um administrador. 
+                    Enquanto isso, você pode visualizar a lista de conteúdos, mas não pode abrir detalhes ou interagir.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap border-b border-gray-300 mb-8">
@@ -875,7 +939,7 @@ export default function App() {
                 </select>
               </div>
 
-              {currentUser && currentUser.status === 'APPROVED' && (
+              {permissions.shouldShowCreateButton(currentUser) && (
                 <button
                   onClick={handleOpenUpload}
                   className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg font-medium shadow-md transition-all transform hover:scale-105 whitespace-nowrap
@@ -945,35 +1009,50 @@ export default function App() {
 
                       {/* Action Buttons */}
                       <div className="flex flex-col gap-2 shrink-0 ml-2">
-                        {/* View Button - Always Visible/Enabled */}
-                        <button
-                          type="button"
-                          onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-                          className={`p-2 rounded-lg transition-colors ${expandedId === item.id
-                            ? 'bg-indigo-600 text-white shadow-md'
-                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                        {/* View Button - Com tooltip para GUEST */}
+                        <div className="relative group/tooltip">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (permissions.canViewItemDetails(currentUser)) {
+                                setExpandedId(expandedId === item.id ? null : item.id);
+                              }
+                            }}
+                            disabled={!permissions.canViewItemDetails(currentUser)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              !permissions.canViewItemDetails(currentUser)
+                                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                                : expandedId === item.id
+                                  ? 'bg-indigo-600 text-white shadow-md'
+                                  : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
                             }`}
-                          title="Visualizar detalhes"
-                        >
-                          <Eye size={18} />
-                        </button>
+                            title={permissions.canViewItemDetails(currentUser) ? "Visualizar detalhes" : ""}
+                          >
+                            <Eye size={18} />
+                          </button>
+                          {!permissions.canViewItemDetails(currentUser) && (
+                            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none z-10">
+                              Aguarde aprovação para visualizar
+                            </div>
+                          )}
+                        </div>
 
                         {/* Edit Button */}
                         <div className="relative group/tooltip">
                           <button
                             type="button"
                             onClick={(e) => handleOpenEdit(item, e)}
-                            disabled={!canEditItem(item)}
-                            className={`p-2 rounded-lg transition-colors ${canEditItem(item)
+                            disabled={!permissions.canEditItem(currentUser, item)}
+                            className={`p-2 rounded-lg transition-colors ${permissions.canEditItem(currentUser, item)
                               ? 'bg-amber-50 text-amber-600 hover:bg-amber-100 cursor-pointer'
                               : 'bg-gray-100 text-gray-300 cursor-not-allowed'
                               }`}
                           >
                             <FilePenLine size={18} />
                           </button>
-                          {!canEditItem(item) && (
+                          {!permissions.canEditItem(currentUser, item) && (
                             <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none z-10">
-                              Apenas o autor pode editar
+                              Sem permissão para editar
                             </div>
                           )}
                         </div>
@@ -983,17 +1062,17 @@ export default function App() {
                           <button
                             type="button"
                             onClick={(e) => handleDeleteItem(item.id, e)}
-                            disabled={!canEditItem(item)}
-                            className={`p-2 rounded-lg transition-colors ${canEditItem(item)
+                            disabled={!permissions.canDeleteItem(currentUser, item)}
+                            className={`p-2 rounded-lg transition-colors ${permissions.canDeleteItem(currentUser, item)
                               ? 'bg-red-50 text-red-600 hover:bg-red-100 cursor-pointer'
                               : 'bg-gray-100 text-gray-300 cursor-not-allowed'
                               }`}
                           >
                             <Trash2 size={18} />
                           </button>
-                          {!canEditItem(item) && (
+                          {!permissions.canDeleteItem(currentUser, item) && (
                             <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none z-10">
-                              Apenas o autor pode excluir
+                              Sem permissão para excluir
                             </div>
                           )}
                         </div>
@@ -1162,62 +1241,20 @@ export default function App() {
         </div>
       )}
 
-      {/* Login Modal */}
-      {isLoginModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 transform transition-all scale-100">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">Acesso Restrito</h2>
-              <button onClick={() => setIsLoginModalOpen(false)} className="text-gray-400 hover:text-gray-600">
-                <X size={24} />
-              </button>
-            </div>
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
 
-            <p className="text-gray-600 mb-8">Escolha um perfil para simular o acesso à plataforma:</p>
-
-            <div className="space-y-4">
-              <button
-                onClick={() => confirmLogin('USER')}
-                className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                    <UserIcon size={24} className="text-indigo-600" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-bold text-gray-900">Usuário Padrão</div>
-                    <div className="text-sm text-gray-500">Edita apenas o próprio conteúdo</div>
-                  </div>
-                </div>
-                <div className="text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <CheckCircle size={20} />
-                </div>
-              </button>
-
-              <button
-                onClick={() => confirmLogin('ADMIN')}
-                className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 hover:shadow-md transition-all group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="bg-purple-100 p-3 rounded-full group-hover:bg-purple-200 transition-colors">
-                    <ShieldCheck size={24} className="text-purple-600" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-bold text-gray-900">Administrador</div>
-                    <div className="text-sm text-gray-500">Acesso total (Gerencia tudo)</div>
-                  </div>
-                </div>
-                <div className="text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <CheckCircle size={20} />
-                </div>
-              </button>
-            </div>
-
-            <div className="mt-8 text-center text-xs text-gray-400">
-              Ambiente de teste seguro • Nenhuma senha necessária
-            </div>
-          </div>
-        </div>
+      {/* Admin Panel */}
+      {currentUser && permissions.canAccessAdminPanel(currentUser) && (
+        <AdminPanel
+          isOpen={isAdminPanelOpen}
+          onClose={() => setIsAdminPanelOpen(false)}
+          currentUser={currentUser}
+        />
       )}
 
       {/* Upload/Edit Modal */}

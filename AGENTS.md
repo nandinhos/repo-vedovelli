@@ -1,0 +1,16 @@
+- Sempre verifique se o conteúdo da pasta "docs" para poder fazer a codificação.
+- O intuito é economizar o consumo de tokens.
+- Evite ficar criando relatorios em excesso.
+- siga as melhores praticas de programação.
+- sempre verifique o banco de dados para entender a estrutura.
+- verifique a documentação do projeto para entender a estrutura.
+- veja as tarefas pendentes, planejadas e concluidas para entender o que foi feito e o que ainda precisa ser feito.
+- atualize em tempo real as tarefas para que eu possa ver o progresso.
+- seja objetivo, não crie commits com emojis, seja direto e pontual.
+- mantenha a consistencia visual do projeto.
+- não crie branches sem motivo.
+- não crie commits sem motivo.
+- antes de realizar o commit, pergunte se a funcionalidade está okay na pratica, precisa dessa revisão para poder versionar.
+- realize o commit apenas quando a funcionalidade estiver pronta e revisada, com validação do operador.
+- sempre que realizar as alterações no codigo do frontend, necessário fazer o procedimento adequado para que eu possa ver as alterações (build, docker, etc).
+- não crie documento .md em excesso, apenas quando for necessário e solicitado, temos os documentos principais com as definicoes.

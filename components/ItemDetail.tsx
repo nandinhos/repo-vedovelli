@@ -4,6 +4,7 @@ import { RepositoryItem, Comment, User, UserRole } from '../types';
 import { CodeBlock } from './CodeBlock';
 import { ImageModal } from './ImageModal';
 import { CodeInsertionModal } from './CodeInsertionModal';
+import { permissions } from '../utils/permissions';
 
 interface ItemDetailProps {
   item: RepositoryItem;
@@ -123,13 +124,13 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
 
   // --- PERMISSIONS ---
   const canEditComment = (comment: Comment) => {
-    if (!currentUser || comment.isDeleted) return false;
-    return currentUser.id === comment.userId;
+    if (comment.isDeleted) return false;
+    return permissions.canEditComment(currentUser, comment.userId);
   };
 
   const canDeleteComment = (comment: Comment) => {
-    if (!currentUser || comment.isDeleted) return false;
-    return currentUser.role === UserRole.ADMIN || currentUser.id === comment.userId;
+    if (comment.isDeleted) return false;
+    return permissions.canDeleteComment(currentUser, comment.userId);
   };
 
   // --- RENDER HELPER ---
@@ -253,7 +254,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
             ) : (
                 item.comments.map(comment => {
                   if (comment.isDeleted) {
-                    if (currentUser && (currentUser.role === UserRole.ADMIN || currentUser.id === comment.userId)) {
+                    if (canDeleteComment(comment)) {
                         return (
                             <div key={comment.id} className="flex gap-4 p-4 bg-red-50 border border-red-100 rounded-xl opacity-75">
                                 <div className="flex-1 min-w-0">

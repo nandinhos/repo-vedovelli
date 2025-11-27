@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { User } from '../models/User';
+import { Item } from '../models/Item';
+import { Comment } from '../models/Comment';
 import { authenticate, authorize } from '../middleware/auth';
 
 const router = express.Router();
@@ -12,7 +14,7 @@ router.use(authenticate);
  * GET /api/admin/users
  * Lista todos os usuários (apenas SUPERADMIN)
  */
-router.get('/users', authorize('SUPERADMIN'), async (req: Request, res: Response) => {
+router.get('/users', authorize('SUPERADMIN', 'MODERATOR'), async (req: Request, res: Response) => {
     try {
         const { status, role } = req.query;
 
@@ -198,7 +200,7 @@ router.delete('/users/:id', authorize('SUPERADMIN'), async (req: Request, res: R
  * GET /api/admin/stats
  * Estatísticas do sistema (apenas SUPERADMIN)
  */
-router.get('/stats', authorize('SUPERADMIN'), async (req: Request, res: Response) => {
+router.get('/stats', authorize('SUPERADMIN', 'MODERATOR'), async (req: Request, res: Response) => {
     try {
         const totalUsers = await User.count();
         const pendingUsers = await User.count({ where: { status: 'PENDING' } });
@@ -209,6 +211,10 @@ router.get('/stats', authorize('SUPERADMIN'), async (req: Request, res: Response
         const moderators = await User.count({ where: { role: 'MODERATOR' } });
         const users = await User.count({ where: { role: 'USER' } });
         const guests = await User.count({ where: { role: 'GUEST' } });
+
+        // Contar items e comentários
+        const totalItems = await Item.count();
+        const totalComments = await Comment.count();
 
         res.json({
             stats: {
@@ -224,6 +230,8 @@ router.get('/stats', authorize('SUPERADMIN'), async (req: Request, res: Response
                     user: users,
                     guest: guests,
                 },
+                totalItems,
+                totalComments,
             },
         });
     } catch (error) {
