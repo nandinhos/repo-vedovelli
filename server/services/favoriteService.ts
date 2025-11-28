@@ -17,7 +17,11 @@ export class FavoriteService {
         await existing.destroy();
         return { isFavorited: false };
       } else {
-        await Favorite.create({ userId, itemId });
+        await Favorite.create({ 
+          id: `fav-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          userId, 
+          itemId 
+        });
         return { isFavorited: true };
       }
     } catch (error) {
@@ -48,7 +52,10 @@ export class FavoriteService {
         order: [['createdAt', 'DESC']]
       });
       
-      return favorites.map(fav => fav.get({ plain: true }).item);
+      return favorites.map(fav => {
+        const plain = fav.get({ plain: true }) as any;
+        return plain.item;
+      });
     } catch (error) {
       throw new Error(`Erro ao buscar favoritos: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
