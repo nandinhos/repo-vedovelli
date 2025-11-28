@@ -283,20 +283,20 @@ const FavoritesView: React.FC<any> = ({
   if (isLoading) {
     return (
       <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-        <p className="text-gray-500 mt-4">Carregando favoritos...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 dark:border-red-500 mx-auto"></div>
+        <p className="text-gray-500 dark:text-gray-400 mt-4">Carregando favoritos...</p>
       </div>
     );
   }
 
   if (favorites.length === 0) {
     return (
-      <div className="text-center py-20 bg-white rounded-xl border border-gray-200">
-        <Heart className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+      <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+        <Heart className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
           Nenhum favorito ainda
         </h3>
-        <p className="text-gray-500">
+        <p className="text-gray-500 dark:text-gray-400">
           Clique no ❤️ em qualquer item para salvá-lo aqui!
         </p>
       </div>
@@ -306,7 +306,7 @@ const FavoritesView: React.FC<any> = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Heart className="text-red-500 fill-current" size={28} />
           Meus Favoritos ({favorites.length})
         </h2>
@@ -314,7 +314,7 @@ const FavoritesView: React.FC<any> = ({
       
       <div className="grid grid-cols-1 gap-4">
         {favorites.map(item => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <div key={item.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow duration-300">
             <div className="p-5">
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
@@ -327,10 +327,10 @@ const FavoritesView: React.FC<any> = ({
                       {item.category}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-3">{item.description}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">{item.description}</p>
 
                   {item.tags && item.tags.length > 0 && (
                     <div className="mb-3">
@@ -342,7 +342,7 @@ const FavoritesView: React.FC<any> = ({
                     </div>
                   )}
 
-                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                  <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                     <div className="flex items-center gap-1.5">
                       <UserIcon size={14} />
                       <span>{item.authorName}</span>
@@ -366,8 +366,8 @@ const FavoritesView: React.FC<any> = ({
                     type="button"
                     onClick={() => onItemClick(item.id)}
                     className={`p-2 rounded-lg transition-colors ${expandedId === item.id
-                      ? 'bg-indigo-600 text-white shadow-md'
-                      : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+                      ? 'bg-indigo-600 dark:bg-indigo-500 text-white shadow-md'
+                      : 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50'
                       }`}
                     title="Visualizar detalhes"
                   >
@@ -450,7 +450,6 @@ export default function App() {
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   
   // Auth Modal
-  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // Fetch Data from API
@@ -546,13 +545,11 @@ export default function App() {
   // --- ACTIONS ---
 
   const handleOpenLogin = () => {
-    setAuthModalMode('login');
     setIsAuthModalOpen(true);
   };
 
-  const handleOpenRegister = () => {
-    setAuthModalMode('register');
-    setIsAuthModalOpen(true);
+  const handleLoginSuccess = (token: string, user: any) => {
+    login(token, user);
   };
 
   const handleLogout = () => {
@@ -607,9 +604,13 @@ export default function App() {
     };
 
     try {
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/users/${currentUser.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(updatedUser)
       });
 
@@ -691,7 +692,11 @@ export default function App() {
       message: 'Tem certeza que deseja excluir este item permanentemente? Esta ação não pode ser desfeita.',
       onConfirm: async () => {
         try {
-          const response = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+          const token = localStorage.getItem('authToken');
+          const response = await fetch(`/api/items/${id}`, { 
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
           if (response.ok) {
             setItems(prev => prev.filter(i => i.id !== id));
             if (expandedId === id) setExpandedId(null);
@@ -750,16 +755,24 @@ export default function App() {
       let savedItemId;
       
       if (editingItem) {
+        const token = localStorage.getItem('authToken');
         response = await fetch(`/api/items/${editingItem.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify(itemData)
         });
         savedItemId = editingItem.id;
       } else {
+        const token = localStorage.getItem('authToken');
         response = await fetch('/api/items', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify(itemData)
         });
       }
@@ -814,9 +827,13 @@ export default function App() {
     };
 
     try {
+      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/comments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(commentData)
       });
 
@@ -844,9 +861,13 @@ export default function App() {
   // FIXED: Added screenshot support
   const handleEditComment = async (itemId: string, commentId: string, text: string, screenshot?: string) => {
     try {
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/comments/${commentId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ content: text, screenshotUrl: screenshot })
       });
 
@@ -885,7 +906,11 @@ export default function App() {
       message: 'Tem certeza que deseja excluir este comentário permanentemente?',
       onConfirm: async () => {
         try {
-          const response = await fetch(`/api/comments/${commentId}`, { method: 'DELETE' });
+          const token = localStorage.getItem('authToken');
+          const response = await fetch(`/api/comments/${commentId}`, { 
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
           if (response.ok) {
             setItems(prev => prev.map(item => {
               if (item.id === itemId) {
@@ -949,7 +974,8 @@ export default function App() {
 
   const canEditItem = (item: RepositoryItem) => {
     if (!currentUser) return false;
-    return currentUser.role === UserRole.ADMIN || currentUser.id === item.authorId;
+    // Usar o sistema de permissões centralizado
+    return permissions.canEditItem(currentUser, item);
   };
 
   // --- FILTERING ---
@@ -1118,16 +1144,20 @@ export default function App() {
           >
             <LinkIcon size={18} /> Links Úteis
           </button>
-          <button
-            onClick={() => setActiveTab('contacts')}
-            className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'contacts'
-              ? 'border-purple-600 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-gray-800'
-              : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
-              }`}
-          >
-            <Users size={18} /> Contatos / Interação
-          </button>
-          {currentUser && (
+          {/* Contatos - Apenas para usuários aprovados (não GUEST) */}
+          {currentUser && currentUser.role !== UserRole.GUEST && (
+            <button
+              onClick={() => setActiveTab('contacts')}
+              className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'contacts'
+                ? 'border-purple-600 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-gray-800'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/50'
+                }`}
+            >
+              <Users size={18} /> Contatos / Interação
+            </button>
+          )}
+          {/* Favoritos - Apenas para usuários que podem favoritar */}
+          {currentUser && permissions.canFavoriteItems(currentUser) && (
             <button
               onClick={() => setActiveTab('favorites')}
               className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${activeTab === 'favorites'
@@ -1157,7 +1187,7 @@ export default function App() {
           </div>
 
           {activeTab !== 'contacts' && (
-            <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+            <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
               <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm whitespace-nowrap">
                 <Filter size={16} className="text-gray-500 dark:text-gray-400" />
                 <select
@@ -1173,7 +1203,7 @@ export default function App() {
               {currentUser && currentUser.status === 'APPROVED' && (
                 <button
                   onClick={handleOpenUpload}
-                  className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg font-medium shadow-md transition-all transform hover:scale-105 whitespace-nowrap
+                  className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg font-medium shadow-md transition-all hover:shadow-lg whitespace-nowrap
                             ${activeTab === 'snippets' ? 'bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600' : ''}
                             ${activeTab === 'files' ? 'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600' : ''}
                             ${activeTab === 'links' ? 'bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600' : ''}
@@ -1289,8 +1319,8 @@ export default function App() {
 
                       {/* Action Buttons */}
                       <div className="flex flex-col gap-2 shrink-0 ml-2">
-                        {/* Favorite Button - Show if user is logged in */}
-                        {currentUser && (
+                        {/* Favorite Button - Show if user can favorite */}
+                        {currentUser && permissions.canFavoriteItems(currentUser) && (
                           <FavoriteButton
                             itemId={item.id}
                             userId={currentUser.id}
@@ -1299,19 +1329,44 @@ export default function App() {
                             size="sm"
                           />
                         )}
+                        {/* Show disabled favorite for GUEST with tooltip */}
+                        {currentUser && !permissions.canFavoriteItems(currentUser) && (
+                          <div className="relative group/tooltip">
+                            <button
+                              disabled
+                              className="p-2 rounded-lg bg-gray-100 text-gray-300 dark:bg-gray-700/50 dark:text-gray-500 cursor-not-allowed"
+                            >
+                              <Heart size={18} />
+                            </button>
+                            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none z-10">
+                              Aguarde aprovação para favoritar
+                            </div>
+                          </div>
+                        )}
                         
-                        {/* View Button - Always Visible/Enabled */}
-                        <button
-                          type="button"
-                          onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-                          className={`p-2 rounded-lg transition-colors ${expandedId === item.id
-                            ? 'bg-indigo-600 text-white shadow-md'
-                            : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-gray-700 dark:text-indigo-400 dark:hover:bg-gray-600'
-                            }`}
-                          title="Visualizar detalhes"
-                        >
-                          <Eye size={18} />
-                        </button>
+                        {/* View Button - Check permissions */}
+                        <div className="relative group/tooltip">
+                          <button
+                            type="button"
+                            onClick={() => permissions.canViewItemDetails(currentUser) && setExpandedId(expandedId === item.id ? null : item.id)}
+                            disabled={!permissions.canViewItemDetails(currentUser)}
+                            className={`p-2 rounded-lg transition-colors ${
+                              !permissions.canViewItemDetails(currentUser)
+                                ? 'bg-gray-100 text-gray-300 dark:bg-gray-700/50 dark:text-gray-500 cursor-not-allowed'
+                                : expandedId === item.id
+                                ? 'bg-indigo-600 text-white shadow-md dark:bg-indigo-500'
+                                : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-gray-700 dark:text-indigo-400 dark:hover:bg-gray-600'
+                              }`}
+                            title={permissions.canViewItemDetails(currentUser) ? "Visualizar detalhes" : ""}
+                          >
+                            <Eye size={18} />
+                          </button>
+                          {!permissions.canViewItemDetails(currentUser) && (
+                            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 whitespace-nowrap pointer-events-none z-10">
+                              Aguarde aprovação para visualizar
+                            </div>
+                          )}
+                        </div>
 
                         {/* Edit Button */}
                         <div className="relative group/tooltip">
@@ -1937,8 +1992,7 @@ export default function App() {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        mode={authModalMode}
-        onSwitchMode={() => setAuthModalMode(authModalMode === 'login' ? 'register' : 'login')}
+        onLoginSuccess={handleLoginSuccess}
       />
 
       {/* Admin Panel */}
@@ -1946,6 +2000,7 @@ export default function App() {
         <AdminPanel
           isOpen={isAdminPanelOpen}
           onClose={() => setIsAdminPanelOpen(false)}
+          currentUser={currentUser}
         />
       )}
     </div>

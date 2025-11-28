@@ -148,7 +148,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
   };
 
   return (
-    <div className="bg-slate-50 dark:bg-gray-900/50 p-6 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
+    <div className="bg-slate-50 dark:bg-gray-900 p-6 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
       <ImageModal 
         isOpen={viewImage.isOpen} 
         imageUrl={viewImage.url} 
@@ -166,7 +166,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
       <div className="flex flex-col gap-8">
         
         {/* SECTION 1: ITEM DETAILS & RESOURCES */}
-        <div className="space-y-6 w-full">
+        <div className="space-y-6 w-full bg-transparent">
           
           {/* Link Special Display */}
           {item.type === 'link' && (
@@ -189,7 +189,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
           )}
           
           {/* Description */}
-          <div>
+          <div className="bg-transparent">
             <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Sobre este item</h4>
             <div className="prose max-w-none text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
                 <p className="leading-relaxed text-base">{item.description}</p>
@@ -198,29 +198,29 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
 
           {/* Action Buttons / Resources */}
           {(item.repository || item.website || item.youtube || item.type === 'file') && (
-              <div>
+              <div className="bg-transparent">
                  <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Recursos Adicionais</h4>
                  <div className="flex flex-wrap gap-3">
                     {item.repository && (
                     <a href={item.repository} target="_blank" rel="noopener noreferrer" 
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white text-sm rounded-md hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors shadow-sm">
+                        className="flex items-center gap-2 px-4 py-2 bg-[#24292e] text-white text-sm rounded-md hover:bg-[#1a1e22] transition-colors shadow-sm">
                         <Github size={16} /> Repositório GitHub
                     </a>
                     )}
                     {item.website && (
                     <a href={item.website} target="_blank" rel="noopener noreferrer" 
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white text-sm rounded-md hover:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors shadow-sm">
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors shadow-sm">
                         <ExternalLink size={16} /> Website do Projeto
                     </a>
                     )}
                     {item.youtube && (
                     <a href={item.youtube} target="_blank" rel="noopener noreferrer" 
-                        className="flex items-center gap-2 px-4 py-2 bg-red-600 dark:bg-red-500 text-white text-sm rounded-md hover:bg-red-500 dark:hover:bg-red-600 transition-colors shadow-sm">
+                        className="flex items-center gap-2 px-4 py-2 bg-[#FF0000] text-white text-sm rounded-md hover:bg-[#CC0000] transition-colors shadow-sm">
                         <Youtube size={16} /> Ver Vídeo/Demo
                     </a>
                     )}
                     {item.type === 'file' && (
-                    <a href={item.downloadUrl} className="flex items-center gap-2 px-4 py-2 bg-emerald-600 dark:bg-emerald-500 text-white text-sm rounded-md hover:bg-emerald-500 dark:hover:bg-emerald-600 transition-colors shadow-sm">
+                    <a href={item.downloadUrl} className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm rounded-md hover:bg-emerald-700 transition-colors shadow-sm">
                         <Download size={16} /> Download {item.fileExtension.toUpperCase()} ({item.fileSize})
                     </a>
                     )}
@@ -230,7 +230,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
 
           {/* Snippet Code Block */}
           {item.type === 'snippet' && (
-            <div>
+            <div className="bg-transparent">
                <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Preview do Código</h4>
               <CodeBlock code={item.code} language={item.language} />
             </div>
@@ -238,7 +238,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
         </div>
 
         {/* SECTION 2: DISCUSSION / COMMENTS */}
-        <div className="flex flex-col border-t border-gray-300 dark:border-gray-600 pt-8">
+        <div className="flex flex-col border-t border-gray-300 dark:border-gray-600 pt-8 bg-transparent">
           <h4 className="text-base font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-6 flex items-center gap-2">
             <MessageSquare size={20} className="text-indigo-500 dark:text-indigo-400" /> Discussão & Soluções ({item.comments.filter(c => !c.isDeleted).length})
           </h4>
@@ -407,7 +407,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
                         <button 
                             type="button"
                             onClick={() => setShowUrlInput(!showUrlInput)}
-                            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-2 text-xs font-medium border shadow-sm ${showUrlInput ? 'text-indigo-600 bg-indigo-50 border-indigo-200' : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-600'}`}
+                            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-2 text-xs font-medium border shadow-sm ${showUrlInput ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800' : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-600'}`}
                             title="Link de Imagem"
                         >
                             <LinkIcon size={14} /> URL
@@ -529,7 +529,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
                         <button 
                             type="button"
                             onClick={() => setShowEditUrlInput(!showEditUrlInput)}
-                            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-2 text-xs font-medium border ${showEditUrlInput ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600'}`}
+                            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-2 text-xs font-medium border ${showEditUrlInput ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800' : 'text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600'}`}
                         >
                             <LinkIcon size={14} /> URL
                         </button>

@@ -55,7 +55,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, user
                         href={user.socialLinks.github} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="flex items-center justify-center gap-2 p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors shadow-sm"
+                        className="flex items-center justify-center gap-2 p-3 bg-[#24292e] text-white rounded-xl hover:bg-[#1a1e22] transition-colors shadow-sm"
                     >
                         <Github size={18} /> GitHub
                     </a>

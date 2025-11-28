@@ -115,13 +115,13 @@ export const TagInput: React.FC<TagInputProps> = ({
           {selectedTags.map(tag => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-medium transition-colors hover:bg-blue-200"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium transition-colors hover:bg-blue-200 dark:hover:bg-blue-900/50"
             >
               <span>#{tag}</span>
               <button
                 type="button"
                 onClick={() => removeTag(tag)}
-                className="hover:text-blue-600 focus:outline-none ml-1 text-lg leading-none"
+                className="hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none ml-1 text-lg leading-none"
                 aria-label={`Remover tag ${tag}`}
               >
                 ×
@@ -147,34 +147,34 @@ export const TagInput: React.FC<TagInputProps> = ({
           onBlur={handleBlur}
           placeholder={isLimitReached ? `Limite de ${maxTags} tags atingido` : placeholder}
           disabled={isLimitReached}
-          className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
+          className={`w-full px-4 py-2.5 border dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all ${
             isLimitReached
-              ? 'bg-gray-100 cursor-not-allowed text-gray-500'
-              : 'bg-white hover:border-blue-300'
+              ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed text-gray-500 dark:text-gray-400'
+              : 'bg-white dark:bg-gray-800 dark:text-gray-200 hover:border-blue-300 dark:hover:border-blue-600'
           }`}
           maxLength={50}
         />
         
         {/* Tag counter */}
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-gray-500">
           {selectedTags.length}/{maxTags}
         </div>
       </div>
 
       {/* Sugestões */}
       {showSuggestions && filteredSuggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {filteredSuggestions.map((tag, index) => (
             <button
               key={tag.id}
               type="button"
               onClick={() => handleSuggestionClick(tag)}
-              className={`w-full px-4 py-2.5 text-left hover:bg-blue-50 flex justify-between items-center transition-colors ${
-                index === activeSuggestionIndex ? 'bg-blue-50' : ''
+              className={`w-full px-4 py-2.5 text-left hover:bg-blue-50 dark:hover:bg-blue-900/30 flex justify-between items-center transition-colors ${
+                index === activeSuggestionIndex ? 'bg-blue-50 dark:bg-blue-900/30' : ''
               }`}
             >
-              <span className="font-medium text-gray-700">#{tag.name}</span>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              <span className="font-medium text-gray-700 dark:text-gray-300">#{tag.name}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
                 {tag.usageCount || 0} {tag.usageCount === 1 ? 'uso' : 'usos'}
               </span>
             </button>
@@ -183,11 +183,11 @@ export const TagInput: React.FC<TagInputProps> = ({
       )}
 
       {/* Helper text */}
-      <p className="text-xs text-gray-500 mt-2">
-        Pressione <kbd className="px-1.5 py-0.5 bg-gray-100 border rounded text-xs">Enter</kbd> ou{' '}
-        <kbd className="px-1.5 py-0.5 bg-gray-100 border rounded text-xs">,</kbd> para adicionar.
-        Use <kbd className="px-1.5 py-0.5 bg-gray-100 border rounded text-xs">↑</kbd>{' '}
-        <kbd className="px-1.5 py-0.5 bg-gray-100 border rounded text-xs">↓</kbd> para navegar nas sugestões.
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+        Pressione <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600 rounded text-xs dark:text-gray-300">Enter</kbd> ou{' '}
+        <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600 rounded text-xs dark:text-gray-300">,</kbd> para adicionar.
+        Use <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600 rounded text-xs dark:text-gray-300">↑</kbd>{' '}
+        <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600 rounded text-xs dark:text-gray-300">↓</kbd> para navegar nas sugestões.
       </p>
 
       {/* Validation message */}
