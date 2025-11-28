@@ -183,20 +183,20 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-indigo-900 text-white p-6">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                <Shield size={28} />
+              <div className="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                <Shield size={28} className="text-indigo-300" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold">Painel Administrativo</h2>
-                <p className="text-purple-100 text-sm">Gerenciamento de usuários e sistema</p>
+                <p className="text-indigo-300 text-sm">Gerenciamento de usuários e sistema</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
               <X size={24} />
             </button>
@@ -204,47 +204,47 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="bg-white/10 backdrop-blur-sm border-l-4 border-l-gray-400 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <Users size={16} className="text-purple-200" />
-                <span className="text-xs text-purple-200">Total</span>
+                <Users size={16} className="text-gray-300" />
+                <span className="text-xs text-indigo-200 font-medium">Total</span>
               </div>
-              <p className="text-2xl font-bold">{stats.totalUsers}</p>
+              <p className="text-2xl font-bold text-white">{stats.totalUsers}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="bg-white/10 backdrop-blur-sm border-l-4 border-l-amber-500 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <Clock size={16} className="text-yellow-200" />
-                <span className="text-xs text-purple-200">Pendentes</span>
+                <Clock size={16} className="text-amber-300" />
+                <span className="text-xs text-indigo-200 font-medium">Pendentes</span>
               </div>
-              <p className="text-2xl font-bold">{stats.pendingUsers}</p>
+              <p className="text-2xl font-bold text-white">{stats.pendingUsers}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="bg-white/10 backdrop-blur-sm border-l-4 border-l-emerald-500 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <CheckCircle size={16} className="text-green-200" />
-                <span className="text-xs text-purple-200">Aprovados</span>
+                <CheckCircle size={16} className="text-emerald-300" />
+                <span className="text-xs text-indigo-200 font-medium">Aprovados</span>
               </div>
-              <p className="text-2xl font-bold">{stats.approvedUsers}</p>
+              <p className="text-2xl font-bold text-white">{stats.approvedUsers}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="bg-white/10 backdrop-blur-sm border-l-4 border-l-red-500 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <XCircle size={16} className="text-red-200" />
-                <span className="text-xs text-purple-200">Rejeitados</span>
+                <XCircle size={16} className="text-red-300" />
+                <span className="text-xs text-indigo-200 font-medium">Rejeitados</span>
               </div>
-              <p className="text-2xl font-bold">{stats.rejectedUsers}</p>
+              <p className="text-2xl font-bold text-white">{stats.rejectedUsers}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="bg-white/10 backdrop-blur-sm border-l-4 border-l-blue-500 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <FileText size={16} className="text-blue-200" />
-                <span className="text-xs text-purple-200">Posts</span>
+                <FileText size={16} className="text-blue-300" />
+                <span className="text-xs text-indigo-200 font-medium">Posts</span>
               </div>
-              <p className="text-2xl font-bold">{stats.totalItems}</p>
+              <p className="text-2xl font-bold text-white">{stats.totalItems}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
+            <div className="bg-white/10 backdrop-blur-sm border-l-4 border-l-cyan-500 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
-                <MessageSquare size={16} className="text-cyan-200" />
-                <span className="text-xs text-purple-200">Comentários</span>
+                <MessageSquare size={16} className="text-cyan-300" />
+                <span className="text-xs text-indigo-200 font-medium">Comentários</span>
               </div>
-              <p className="text-2xl font-bold">{stats.totalComments}</p>
+              <p className="text-2xl font-bold text-white">{stats.totalComments}</p>
             </div>
           </div>
         </div>
@@ -256,8 +256,8 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
               onClick={() => setActiveTab('pending')}
               className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${
                 activeTab === 'pending'
-                  ? 'border-purple-600 text-purple-700 bg-white dark:bg-gray-800'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-gray-900 dark:border-gray-100 text-gray-900 dark:text-white bg-white dark:bg-gray-800'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               <Clock size={18} />
@@ -267,8 +267,8 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
               onClick={() => setActiveTab('users')}
               className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${
                 activeTab === 'users'
-                  ? 'border-purple-600 text-purple-700 bg-white dark:bg-gray-800'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-gray-900 dark:border-gray-100 text-gray-900 dark:text-white bg-white dark:bg-gray-800'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               <Users size={18} />
@@ -278,8 +278,8 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
               onClick={() => setActiveTab('stats')}
               className={`flex items-center gap-2 px-6 py-3 font-medium text-sm transition-all border-b-2 ${
                 activeTab === 'stats'
-                  ? 'border-purple-600 text-purple-700 bg-white dark:bg-gray-800'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-gray-900 dark:border-gray-100 text-gray-900 dark:text-white bg-white dark:bg-gray-800'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               <Activity size={18} />
@@ -292,7 +292,7 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
         <div className="flex-1 overflow-y-auto p-6">
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-gray-900 dark:border-gray-100 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
             <>
@@ -377,7 +377,7 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                         placeholder="Buscar por nome ou email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-gray-900 dark:focus:border-gray-100"
                       />
                     </div>
                   </div>
@@ -435,7 +435,7 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                                     <select
                                       value={user.role}
                                       onChange={(e) => handleChangeRole(user.id, e.target.value as UserRole)}
-                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100"
                                     >
                                       <option value={UserRole.GUEST}>Visitante (GUEST)</option>
                                       <option value={UserRole.USER}>Usuário (USER)</option>
@@ -480,55 +480,55 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* User Distribution */}
-                    <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-100">
-                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <Users size={20} className="text-purple-600" />
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                      <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <Users size={20} className="text-gray-700 dark:text-gray-300" />
                         Distribuição de Usuários
                       </h3>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Total de Usuários</span>
-                          <span className="font-bold text-lg">{stats.totalUsers}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Total de Usuários</span>
+                          <span className="font-bold text-lg text-gray-900 dark:text-white">{stats.totalUsers}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Aprovados</span>
-                          <span className="font-bold text-lg text-green-600">{stats.approvedUsers}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Aprovados</span>
+                          <span className="font-bold text-lg text-green-600 dark:text-green-500">{stats.approvedUsers}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Pendentes</span>
-                          <span className="font-bold text-lg text-yellow-600">{stats.pendingUsers}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Pendentes</span>
+                          <span className="font-bold text-lg text-amber-600 dark:text-amber-500">{stats.pendingUsers}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Rejeitados</span>
-                          <span className="font-bold text-lg text-red-600">{stats.rejectedUsers}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Rejeitados</span>
+                          <span className="font-bold text-lg text-red-600 dark:text-red-500">{stats.rejectedUsers}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Content Stats */}
-                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
-                      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <TrendingUp size={20} className="text-blue-600" />
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                      <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                        <TrendingUp size={20} className="text-gray-700 dark:text-gray-300" />
                         Estatísticas de Conteúdo
                       </h3>
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Total de Posts</span>
-                          <span className="font-bold text-lg">{stats.totalItems}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Total de Posts</span>
+                          <span className="font-bold text-lg text-gray-900 dark:text-white">{stats.totalItems}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Total de Comentários</span>
-                          <span className="font-bold text-lg">{stats.totalComments}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Total de Comentários</span>
+                          <span className="font-bold text-lg text-gray-900 dark:text-white">{stats.totalComments}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Média Posts/Usuário</span>
-                          <span className="font-bold text-lg">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Média Posts/Usuário</span>
+                          <span className="font-bold text-lg text-gray-900 dark:text-white">
                             {stats.totalUsers > 0 ? (stats.totalItems / stats.totalUsers).toFixed(1) : 0}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Média Comentários/Post</span>
-                          <span className="font-bold text-lg">
+                          <span className="text-sm text-gray-600 dark:text-gray-400">Média Comentários/Post</span>
+                          <span className="font-bold text-lg text-gray-900 dark:text-white">
                             {stats.totalItems > 0 ? (stats.totalComments / stats.totalItems).toFixed(1) : 0}
                           </span>
                         </div>
@@ -537,19 +537,19 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                   </div>
 
                   {/* System Health */}
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100">
-                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Activity size={20} className="text-green-600" />
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                      <Activity size={20} className="text-gray-700 dark:text-gray-300" />
                       Saúde do Sistema
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                          <CheckCircle className="text-green-600" size={24} />
+                        <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                          <CheckCircle className="text-green-600 dark:text-green-500" size={24} />
                         </div>
                         <div>
-                          <p className="text-xs text-gray-600">Taxa de Aprovação</p>
-                          <p className="text-lg font-bold">
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Taxa de Aprovação</p>
+                          <p className="text-lg font-bold text-gray-900 dark:text-white">
                             {stats.totalUsers > 0 
                               ? ((stats.approvedUsers / stats.totalUsers) * 100).toFixed(0) 
                               : 0}%
@@ -557,21 +557,21 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                          <Clock className="text-yellow-600" size={24} />
+                        <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                          <Clock className="text-amber-600 dark:text-amber-500" size={24} />
                         </div>
                         <div>
-                          <p className="text-xs text-gray-600">Aguardando Revisão</p>
-                          <p className="text-lg font-bold">{stats.pendingUsers}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Aguardando Revisão</p>
+                          <p className="text-lg font-bold text-gray-900 dark:text-white">{stats.pendingUsers}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                          <Users className="text-blue-600" size={24} />
+                        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                          <Users className="text-blue-600 dark:text-blue-500" size={24} />
                         </div>
                         <div>
-                          <p className="text-xs text-gray-600">Usuários Ativos</p>
-                          <p className="text-lg font-bold">{stats.approvedUsers}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400">Usuários Ativos</p>
+                          <p className="text-lg font-bold text-gray-900 dark:text-white">{stats.approvedUsers}</p>
                         </div>
                       </div>
                     </div>
