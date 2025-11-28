@@ -12,6 +12,17 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3001,
       host: '0.0.0.0',
+      watch: {
+        usePolling: false,
+        ignored: ['**/node_modules/**', '**/dist/**']
+      },
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3000',
+          changeOrigin: true,
+          secure: false,
+        }
+      }
     },
     plugins: [react()],
     define: {
@@ -22,6 +33,10 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, '.'),
       }
+    },
+    optimizeDeps: {
+      exclude: [],
+      include: ['react', 'react-dom', 'lucide-react']
     }
   };
 });

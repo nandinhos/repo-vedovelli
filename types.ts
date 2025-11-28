@@ -36,6 +36,14 @@ export interface User {
 // User sem informações sensíveis (para responses)
 export type PublicUser = Omit<User, 'password'>;
 
+export interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  usageCount?: number;
+  createdAt?: string;
+}
+
 export interface Comment {
   id: string;
   userId: string;
@@ -60,6 +68,7 @@ export interface BaseItem {
   repository?: string; // GitHub link
   youtube?: string; // YouTube video link
   comments: Comment[];
+  tags?: Tag[]; // Tags associated with this item
 }
 
 export interface SnippetItem extends BaseItem {
