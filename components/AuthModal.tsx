@@ -14,12 +14,15 @@ interface FormData {
   email: string;
   password: string;
   bio: string;
+  howDidYouKnow: string;
+  howDidYouKnowOther: string;
 }
 
 interface FormErrors {
   name?: string;
   email?: string;
   password?: string;
+  howDidYouKnow?: string;
   general?: string;
 }
 
@@ -29,11 +32,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
     name: '',
     email: '',
     password: '',
-    bio: ''
+    bio: '',
+    howDidYouKnow: '',
+    howDidYouKnowOther: ''
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [rejectionInfo, setRejectionInfo] = useState<{ reason?: string; canReapply?: boolean } | null>(null);
 
   if (!isOpen) return null;
 
@@ -58,6 +64,12 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
       newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
     }
 
+    if (mode === 'register' && !formData.howDidYouKnow) {
+      newErrors.howDidYouKnow = 'Por favor, informe como conheceu o grupo';
+    } else if (mode === 'register' && formData.howDidYouKnow === 'other' && !formData.howDidYouKnowOther.trim()) {
+      newErrors.howDidYouKnow = 'Por favor, especifique como conheceu o grupo';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,13 +88,18 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
         ? 'http://localhost:3000/api/auth/login'
         : 'http://localhost:3000/api/auth/register';
 
+      const howDidYouKnowValue = formData.howDidYouKnow === 'other' 
+        ? formData.howDidYouKnowOther 
+        : formData.howDidYouKnow;
+
       const body = mode === 'login'
         ? { email: formData.email, password: formData.password }
         : { 
             name: formData.name, 
             email: formData.email, 
             password: formData.password,
-            bio: formData.bio 
+            bio: formData.bio,
+            howDidYouKnow: howDidYouKnowValue
           };
 
       const response = await fetch(endpoint, {
@@ -102,7 +119,12 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
           });
           setErrors(validationErrors);
         } else {
-          setErrors({ general: data.error || data.message || 'Erro ao processar solicitação' });
+          // Check if it's a rejection error
+          if (data.canReapply && data.rejectionReason) {
+            setRejectionInfo({ reason: data.rejectionReason, canReapply: data.canReapply });
+          } else {
+            setErrors({ general: data.error || data.message || 'Erro ao processar solicitação' });
+          }
         }
         return;
       }
@@ -110,7 +132,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
       if (mode === 'register') {
         // Registro bem-sucedido
         setSuccessMessage(data.message || 'Cadastro realizado! Aguarde aprovação do administrador.');
-        setFormData({ name: '', email: '', password: '', bio: '' });
+        setFormData({ name: '', email: '', password: '', bio: '', howDidYouKnow: '', howDidYouKnowOther: '' });
         
         // Mudar para modo login após 3 segundos
         setTimeout(() => {
@@ -133,7 +155,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     // Limpar erro do campo ao digitar
@@ -142,11 +164,47 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
     }
   };
 
+  const handleReapply = async () => {
+    setLoading(true);
+    setRejectionInfo(null);
+    setErrors({});
+
+    try {
+      const endpoint = 'http://localhost:3000/api/auth/reapply';
+      const token = localStorage.getItem('authToken');
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage(data.message || 'Solicitação enviada! Aguarde nova análise.');
+        setTimeout(() => {
+          setSuccessMessage('');
+          onClose();
+        }, 3000);
+      } else {
+        setErrors({ general: data.error || 'Erro ao processar solicitação' });
+      }
+    } catch (error) {
+      setErrors({ general: 'Erro de conexão com o servidor' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const switchMode = () => {
     setMode(prev => prev === 'login' ? 'register' : 'login');
     setErrors({});
     setSuccessMessage('');
-    setFormData({ name: '', email: '', password: '', bio: '' });
+    setRejectionInfo(null);
+    setFormData({ name: '', email: '', password: '', bio: '', howDidYouKnow: '', howDidYouKnowOther: '' });
   };
 
   return (
@@ -178,6 +236,32 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
           <div className="mx-6 mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-3">
             <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0" size={20} />
             <p className="text-sm text-red-800 dark:text-red-200">{errors.general}</p>
+          </div>
+        )}
+
+        {/* Rejection Info */}
+        {rejectionInfo && (
+          <div className="mx-6 mt-4 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg">
+            <div className="flex items-start gap-3 mb-3">
+              <AlertCircle className="text-orange-600 dark:text-orange-400 flex-shrink-0" size={20} />
+              <div>
+                <p className="text-sm font-medium text-orange-800 dark:text-orange-200 mb-1">
+                  Seu cadastro foi rejeitado
+                </p>
+                <p className="text-sm text-orange-700 dark:text-orange-300">
+                  Motivo: {rejectionInfo.reason}
+                </p>
+              </div>
+            </div>
+            {rejectionInfo.canReapply && (
+              <button
+                onClick={handleReapply}
+                disabled={loading}
+                className="w-full py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Enviando...' : 'Solicitar Nova Aprovação'}
+              </button>
+            )}
           </div>
         )}
 
@@ -265,6 +349,53 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModal
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
             )}
           </div>
+
+          {/* How did you know (only for register) */}
+          {mode === 'register' && (
+            <div>
+              <label htmlFor="howDidYouKnow" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Como você conheceu esse grupo? <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="howDidYouKnow"
+                name="howDidYouKnow"
+                value={formData.howDidYouKnow}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors
+                  ${errors.howDidYouKnow 
+                    ? 'border-red-300 focus:ring-red-500 dark:border-red-600' 
+                    : 'border-gray-300 focus:ring-blue-500 dark:border-gray-600'
+                  } 
+                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+              >
+                <option value="">Selecione uma opção</option>
+                <option value="Grupo Workshop Vedovelli">Grupo Workshop Vedovelli</option>
+                <option value="Amigo de Membro do Grupo">Amigo de Membro do Grupo</option>
+                <option value="other">Outros</option>
+              </select>
+              {errors.howDidYouKnow && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.howDidYouKnow}</p>
+              )}
+            </div>
+          )}
+
+          {/* Other specify (only for register and if "other" is selected) */}
+          {mode === 'register' && formData.howDidYouKnow === 'other' && (
+            <div>
+              <label htmlFor="howDidYouKnowOther" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Por favor, especifique
+              </label>
+              <input
+                type="text"
+                id="howDidYouKnowOther"
+                name="howDidYouKnowOther"
+                value={formData.howDidYouKnowOther}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                placeholder="Como você conheceu o grupo?"
+              />
+            </div>
+          )}
 
           {/* Bio (only for register) */}
           {mode === 'register' && (

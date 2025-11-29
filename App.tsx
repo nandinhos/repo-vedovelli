@@ -61,6 +61,8 @@ import UserMenu from './components/UserMenu';
 import AdminPanel from './components/AdminPanel';
 import { useAuth } from './hooks/useAuth';
 import { permissions } from './utils/permissions';
+import MarkdownEditor from './components/MarkdownEditor';
+import MarkdownViewer from './components/MarkdownViewer';
 
 // --- MOCK DATA ---
 
@@ -330,7 +332,9 @@ const FavoritesView: React.FC<any> = ({
                   <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">{item.description}</p>
+                  <div className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2 overflow-hidden">
+                    <MarkdownViewer content={item.description} />
+                  </div>
 
                   {item.tags && item.tags.length > 0 && (
                     <div className="mb-3">
@@ -794,6 +798,7 @@ export default function App() {
         const updatedItemRes = await fetch(`/api/items`);
         if (updatedItemRes.ok) {
           const allItems = await updatedItemRes.json();
+          console.log('✅ Items atualizados:', allItems.length);
           setItems(allItems);
         }
 
@@ -1200,7 +1205,7 @@ export default function App() {
                 </select>
               </div>
 
-              {currentUser && currentUser.status === 'APPROVED' && (
+              {currentUser && currentUser.status === 'APPROVED' && activeTab !== 'favorites' && (
                 <button
                   onClick={handleOpenUpload}
                   className={`flex items-center gap-2 px-4 py-2 text-white rounded-lg font-medium shadow-md transition-all hover:shadow-lg whitespace-nowrap
@@ -1291,7 +1296,9 @@ export default function App() {
                         <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-1 group-hover:text-indigo-600 transition-colors">
                           {item.title}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">{item.description}</p>
+                        <div className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2 overflow-hidden">
+                          <MarkdownViewer content={item.description} />
+                        </div>
 
                         {/* Tags Display */}
                         {item.tags && item.tags.length > 0 && (
@@ -1736,14 +1743,15 @@ export default function App() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Descrição Curta</label>
-                <textarea
-                  required
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-shadow resize-none"
-                  placeholder="Para que serve este item? Descreva brevemente."
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Descrição <span className="text-gray-500 dark:text-gray-400 font-normal text-xs">(Suporta Markdown)</span>
+                </label>
+                <MarkdownEditor
                   value={newItemDesc}
-                  onChange={(e) => setNewItemDesc(e.target.value)}
+                  onChange={setNewItemDesc}
+                  placeholder="Para que serve este item? Descreva brevemente usando Markdown..."
+                  minRows={4}
+                  maxLength={5000}
                 />
               </div>
 

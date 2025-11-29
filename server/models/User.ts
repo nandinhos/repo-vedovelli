@@ -12,6 +12,8 @@ export class User extends Model {
     public bio?: string;
     public isPublicProfile!: boolean;
     public socialLinks?: object;
+    public howDidYouKnow?: string;
+    public rejectionReason?: string;
     public createdAt!: Date;
     public updatedAt!: Date;
 }
@@ -56,6 +58,14 @@ User.init({
     },
     socialLinks: {
         type: DataTypes.JSON,
+        allowNull: true,
+    },
+    howDidYouKnow: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    rejectionReason: {
+        type: DataTypes.TEXT,
         allowNull: true,
     },
 }, {

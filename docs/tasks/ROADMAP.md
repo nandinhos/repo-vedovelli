@@ -8,10 +8,11 @@
 
 | Sprint | Status | Início | Conclusão | Progresso |
 |--------|--------|--------|-----------|-----------|
-| Sprint 1 - Quick Wins | 🚧 Em Progresso | 25/11/2024 | - | 2/4 (50%) |
+| Sprint 1 - Quick Wins | ✅ Concluída | 25/11/2024 | 28/11/2025 | 4/4 (100%) |
 | Sprint 2 - Engajamento | 📅 Planejada | - | - | 0/4 |
 | Sprint 3 - Descoberta | 📅 Planejada | - | - | 0/4 |
 | Sprint 4 - Colaboração Avançada | 📅 Planejada | - | - | 0/4 |
+| Backlog - Revisão Técnica | ⏳ Pendente | - | - | 0/3 |
 
 **Legenda:**
 - ⏳ Pendente
@@ -31,8 +32,8 @@
 |---|---------|--------|--------------|------------|
 | 1.1 | Sistema de Tags básico | ✅ Concluída | [TASK-001.md](./TASK-001-tags-system.md) | 🔴 Alta |
 | 1.2 | Favoritos/Bookmarks | ✅ Concluída | [TASK-002.md](./TASK-002-favorites.md) | 🔴 Alta |
-| 1.3 | Dark Mode | ⏳ Pendente | [TASK-003.md](./TASK-003-dark-mode.md) | 🟡 Média |
-| 1.4 | Preview Markdown em Tempo Real | ⏳ Pendente | [TASK-004.md](./TASK-004-markdown-preview.md) | 🟡 Média |
+| 1.3 | Dark Mode | ✅ Concluída | [TASK-003.md](./TASK-003-dark-mode.md) | 🟡 Média |
+| 1.4 | Preview Markdown em Tempo Real | ✅ Concluída | [TASK-004.md](./TASK-004-markdown-preview.md) | 🟡 Média |
 
 ---
 
@@ -100,11 +101,11 @@
 ## 📊 Métricas de Progresso
 
 **Sprint 1:**
-- [x] Tasks concluídas: 2/4 (50%) ████████░░░░
+- [x] Tasks concluídas: 4/4 (100%) █████████████
 - [x] TASK-001: ✅ Sistema de Tags (9.5h)
 - [x] TASK-002: ✅ Favoritos/Bookmarks (8h)
-- [ ] TASK-003: ⏳ Dark Mode
-- [ ] TASK-004: ⏳ Preview Markdown
+- [x] TASK-003: ✅ Dark Mode (~6h)
+- [x] TASK-004: ✅ Preview Markdown (~2h)
 
 **Sprint 2:**
 - [ ] Tasks concluídas: 0/4 (0%)
@@ -142,6 +143,29 @@
 
 ---
 
-**Última Atualização:** {{ DATA_ATUAL }}
+## 📦 Backlog - Revisão Técnica
+
+**Funcionalidades implementadas fora do escopo original que precisam de revisão, refinamento e validação completa.**
+
+| # | Feature | Status | Arquivo Task | Prioridade | Estimativa |
+|---|---------|--------|--------------|------------|------------|
+| 99 | Sistema de Autenticação Completo | ⏳ Pendente | [TASK-099.md](./TASK-099-auth-system-review.md) | 🔴 Alta | 12-16h |
+| 100 | Sistema de Aprovação de Usuários | ⏳ Pendente | [TASK-100.md](./TASK-100-user-approval-system-review.md) | 🟡 Média | 8-10h |
+| 101 | CRUD de Usuários (Admin Panel) | ⏳ Pendente | [TASK-101.md](./TASK-101-admin-crud-review.md) | 🟡 Média | 10-12h |
+
+**Total Estimado:** 30-38 horas de revisão e validação
+
+### Escopo do Backlog:
+Estas funcionalidades foram implementadas de forma emergencial para atender necessidades do projeto, mas não passaram pelo processo completo de:
+- ✅ Implementação funcional (já feito)
+- ⏳ Testes automatizados completos
+- ⏳ Documentação detalhada
+- ⏳ Revisão de código e refatoração
+- ⏳ Validação de segurança
+- ⏳ Testes manuais exaustivos
+
+---
+
+**Última Atualização:** 28/11/2025
 **Responsável:** Time Vedovelli
 **Próxima Revisão:** Ao final de cada Sprint

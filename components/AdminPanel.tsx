@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   X, Users, CheckCircle, XCircle, Shield, Clock, Search,
-  UserCheck, UserX, Crown, Eye, AlertTriangle, TrendingUp,
-  MessageSquare, FileText, Activity, ChevronDown, ChevronUp
+  UserCheck, UserX, Crown, Eye, AlertTriangle, AlertCircle, TrendingUp,
+  MessageSquare, FileText, Activity, ChevronDown, ChevronUp, Edit, Trash2, Key
 } from 'lucide-react';
 import { User, UserRole, ApprovalStatus } from '../types';
 
@@ -36,6 +36,10 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '', email: '', bio: '', avatar: '' });
+  const [newPassword, setNewPassword] = useState('');
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -95,7 +99,7 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
   const handleApproveUser = async (userId: string) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/admin/users/${userId}/approve`, {
+      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/approve`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -111,13 +115,19 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
   };
 
   const handleRejectUser = async (userId: string) => {
+    const reason = prompt('Por favor, informe o motivo da rejeição (será exibido ao usuário):');
+    
+    if (reason === null) return; // User cancelled
+    
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/admin/users/${userId}/reject`, {
+      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/reject`, {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({ reason: reason || 'Não especificado' })
       });
 
       if (response.ok) {
@@ -136,7 +146,7 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await fetch(`/api/admin/users/${userId}/role`, {
+      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}/role`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -153,6 +163,105 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
     }
   };
 
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    setEditFormData({
+      name: user.name,
+      email: user.email,
+      bio: user.bio || '',
+      avatar: user.avatar
+    });
+    setShowPasswordReset(false);
+  };
+
+  const handleUpdateUser = async () => {
+    if (!editingUser) return;
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`http://localhost:3000/api/admin/users/${editingUser.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editFormData)
+      });
+
+      if (response.ok) {
+        await fetchData();
+        setEditingUser(null);
+        alert('Usuário atualizado com sucesso!');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Erro ao atualizar usuário');
+      }
+    } catch (error) {
+      console.error('Failed to update user:', error);
+      alert('Erro ao atualizar usuário');
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!editingUser || !newPassword) return;
+
+    if (newPassword.length < 6) {
+      alert('A senha deve ter no mínimo 6 caracteres');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`http://localhost:3000/api/admin/users/${editingUser.id}/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ newPassword })
+      });
+
+      if (response.ok) {
+        alert('Senha resetada com sucesso!');
+        setNewPassword('');
+        setShowPasswordReset(false);
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Erro ao resetar senha');
+      }
+    } catch (error) {
+      console.error('Failed to reset password:', error);
+      alert('Erro ao resetar senha');
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    if (!confirm(`Tem certeza que deseja deletar o usuário "${userName}"? Esta ação não pode ser desfeita.`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`http://localhost:3000/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        await fetchData();
+        alert('Usuário deletado com sucesso!');
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Erro ao deletar usuário');
+      }
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+      alert('Erro ao deletar usuário');
+    }
+  };
+
   const getRoleBadge = (role: UserRole) => {
     const badges = {
       [UserRole.SUPERADMIN]: { label: 'Super Admin', icon: Crown, color: 'bg-purple-100 text-purple-800 border-purple-200' },
@@ -160,7 +269,8 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
       [UserRole.USER]: { label: 'Usuário', icon: UserCheck, color: 'bg-green-100 text-green-800 border-green-200' },
       [UserRole.GUEST]: { label: 'Visitante', icon: Clock, color: 'bg-gray-100 text-gray-800 border-gray-200' }
     };
-    return badges[role];
+    // Fallback para role inválido ou undefined
+    return badges[role] || { label: 'Indefinido', icon: AlertCircle, color: 'bg-red-100 text-red-800 border-red-200' };
   };
 
   const getStatusBadge = (status: ApprovalStatus) => {
@@ -180,8 +290,136 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+    <>
+      {/* Edit User Modal */}
+      {editingUser && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Editar Usuário: {editingUser.name}
+                </h3>
+                <button
+                  onClick={() => setEditingUser(null)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={editFormData.email}
+                  onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              {/* Bio */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Bio
+                </label>
+                <textarea
+                  value={editFormData.bio}
+                  onChange={(e) => setEditFormData({ ...editFormData, bio: e.target.value })}
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white resize-none"
+                />
+              </div>
+
+              {/* Avatar URL */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Avatar URL
+                </label>
+                <input
+                  type="url"
+                  value={editFormData.avatar}
+                  onChange={(e) => setEditFormData({ ...editFormData, avatar: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              {/* Password Reset Section */}
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={() => setShowPasswordReset(!showPasswordReset)}
+                  className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 mb-3"
+                >
+                  <Key size={16} />
+                  {showPasswordReset ? 'Cancelar reset de senha' : 'Resetar senha do usuário'}
+                </button>
+
+                {showPasswordReset && (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nova Senha (mínimo 6 caracteres)
+                      </label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                        placeholder="Digite a nova senha"
+                      />
+                    </div>
+                    <button
+                      onClick={handleResetPassword}
+                      disabled={!newPassword || newPassword.length < 6}
+                      className="w-full py-2 px-4 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Confirmar Reset de Senha
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3 pt-4">
+                <button
+                  onClick={handleUpdateUser}
+                  className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Salvar Alterações
+                </button>
+                <button
+                  onClick={() => setEditingUser(null)}
+                  className="py-3 px-4 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-medium transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main Admin Panel */}
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-indigo-900 text-white p-6">
           <div className="flex items-center justify-between mb-6">
@@ -335,6 +573,12 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                                 {user.bio && (
                                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">{user.bio}</p>
                                 )}
+                                {(user as any).howDidYouKnow && (
+                                  <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <p className="text-xs text-blue-600 font-medium">Como conheceu o grupo:</p>
+                                    <p className="text-sm text-blue-800">{(user as any).howDidYouKnow}</p>
+                                  </div>
+                                )}
                                 <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
                                   <Clock size={14} />
                                   <span>Cadastrado em: {new Date(user.createdAt || Date.now()).toLocaleDateString('pt-BR')}</span>
@@ -427,6 +671,20 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                                   <p className="text-sm text-gray-600 mb-3">{user.bio}</p>
                                 )}
                                 
+                                {(user as any).howDidYouKnow && (
+                                  <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <p className="text-xs text-blue-600 font-medium">Como conheceu o grupo:</p>
+                                    <p className="text-sm text-blue-800">{(user as any).howDidYouKnow}</p>
+                                  </div>
+                                )}
+                                
+                                {user.status === ApprovalStatus.REJECTED && (user as any).rejectionReason && (
+                                  <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded-lg">
+                                    <p className="text-xs text-red-600 font-medium">Motivo da rejeição:</p>
+                                    <p className="text-sm text-red-800">{(user as any).rejectionReason}</p>
+                                  </div>
+                                )}
+                                
                                 {currentUser.role === UserRole.SUPERADMIN && user.id !== currentUser.id && (
                                   <div className="mb-4">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -445,7 +703,7 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                                   </div>
                                 )}
 
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3 flex-wrap">
                                   {user.status === ApprovalStatus.PENDING && (
                                     <>
                                       <button
@@ -462,6 +720,28 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
                                         <XCircle size={14} />
                                         Rejeitar
                                       </button>
+                                    </>
+                                  )}
+                                  
+                                  {user.id !== currentUser.id && (
+                                    <>
+                                      <button
+                                        onClick={() => handleEditUser(user)}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                      >
+                                        <Edit size={14} />
+                                        Editar
+                                      </button>
+                                      
+                                      {currentUser.role === UserRole.SUPERADMIN && (
+                                        <button
+                                          onClick={() => handleDeleteUser(user.id, user.name)}
+                                          className="flex items-center gap-2 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                          <Trash2 size={14} />
+                                          Deletar
+                                        </button>
+                                      )}
                                     </>
                                   )}
                                 </div>
@@ -581,7 +861,8 @@ export default function AdminPanel({ isOpen, onClose, currentUser }: AdminPanelP
             </>
           )}
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

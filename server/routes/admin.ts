@@ -96,7 +96,7 @@ router.put('/users/:id/approve', authorize('SUPERADMIN', 'MODERATOR'), async (re
 router.put('/users/:id/reject', authorize('SUPERADMIN', 'MODERATOR'), async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { reason } = req.body;
+        const { reason } = req.body || {};
 
         const user = await User.findByPk(id);
         if (!user) {
@@ -109,7 +109,7 @@ router.put('/users/:id/reject', authorize('SUPERADMIN', 'MODERATOR'), async (req
 
         await user.update({
             status: 'REJECTED',
-            bio: reason ? `Rejeitado: ${reason}` : user.bio, // Opcionalmente salvar motivo
+            rejectionReason: reason || 'Não especificado',
         });
 
         const { password, ...userWithoutPassword } = user.get({ plain: true });
@@ -165,6 +165,105 @@ router.put(
         } catch (error) {
             console.error('Erro ao alterar role:', error);
             res.status(500).json({ error: 'Erro ao alterar role' });
+        }
+    }
+);
+
+/**
+ * PUT /api/admin/users/:id/password
+ * Reseta a senha de um usuário (SUPERADMIN e MODERATOR)
+ * IMPORTANTE: Esta rota DEVE vir ANTES da rota genérica /users/:id
+ */
+router.put(
+    '/users/:id/password',
+    authorize('SUPERADMIN', 'MODERATOR'),
+    [
+        body('newPassword').isLength({ min: 6 }).withMessage('Nova senha deve ter no mínimo 6 caracteres'),
+    ],
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { id } = req.params;
+            const { newPassword } = req.body;
+
+            const user = await User.findByPk(id);
+            if (!user) {
+                return res.status(404).json({ error: 'Usuário não encontrado' });
+            }
+
+            // Importar função de hash
+            const bcrypt = require('bcryptjs');
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            await user.update({ password: hashedPassword });
+
+            res.json({ message: 'Senha resetada com sucesso' });
+        } catch (error) {
+            console.error('Erro ao resetar senha:', error);
+            res.status(500).json({ error: 'Erro ao resetar senha' });
+        }
+    }
+);
+
+/**
+ * PUT /api/admin/users/:id
+ * Edita os dados de um usuário (SUPERADMIN e MODERATOR)
+ * IMPORTANTE: Esta rota DEVE vir DEPOIS das rotas específicas (/approve, /reject, /role, /password)
+ */
+router.put(
+    '/users/:id',
+    authorize('SUPERADMIN', 'MODERATOR'),
+    [
+        body('name').optional().trim().isLength({ min: 2 }).withMessage('Nome deve ter no mínimo 2 caracteres'),
+        body('email').optional().isEmail().withMessage('Email inválido'),
+        body('bio').optional().trim(),
+        body('avatar').optional().isURL().withMessage('Avatar deve ser uma URL válida'),
+    ],
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        try {
+            const { id } = req.params;
+            const { name, email, bio, avatar } = req.body;
+
+            const user = await User.findByPk(id);
+            if (!user) {
+                return res.status(404).json({ error: 'Usuário não encontrado' });
+            }
+
+            // Se está alterando email, verificar se já existe
+            if (email && email !== user.email) {
+                const existingUser = await User.findOne({ where: { email } });
+                if (existingUser) {
+                    return res.status(409).json({ error: 'Email já está em uso' });
+                }
+            }
+
+            // Atualizar apenas os campos fornecidos
+            const updateData: any = {};
+            if (name !== undefined) updateData.name = name;
+            if (email !== undefined) updateData.email = email;
+            if (bio !== undefined) updateData.bio = bio;
+            if (avatar !== undefined) updateData.avatar = avatar;
+
+            await user.update(updateData);
+
+            const { password, ...userWithoutPassword } = user.get({ plain: true });
+
+            res.json({
+                message: 'Usuário atualizado com sucesso',
+                user: userWithoutPassword,
+            });
+        } catch (error) {
+            console.error('Erro ao atualizar usuário:', error);
+            res.status(500).json({ error: 'Erro ao atualizar usuário' });
         }
     }
 );

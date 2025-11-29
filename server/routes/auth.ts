@@ -17,6 +17,7 @@ router.post(
         body('email').isEmail().withMessage('Email inválido'),
         body('password').isLength({ min: 6 }).withMessage('Senha deve ter no mínimo 6 caracteres'),
         body('bio').optional().trim(),
+        body('howDidYouKnow').notEmpty().withMessage('Por favor, informe como conheceu o grupo'),
         body('avatar').optional().isURL().withMessage('Avatar deve ser uma URL válida'),
     ],
     async (req: Request, res: Response) => {
@@ -26,7 +27,7 @@ router.post(
         }
 
         try {
-            const { name, email, password, bio, avatar } = req.body;
+            const { name, email, password, bio, howDidYouKnow, avatar } = req.body;
 
             // Verificar se email já existe
             const existingUser = await User.findOne({ where: { email } });
@@ -50,6 +51,7 @@ router.post(
                 status: 'PENDING', // Aguarda aprovação
                 avatar: avatar || defaultAvatar,
                 bio: bio || '',
+                howDidYouKnow,
                 isPublicProfile: false,
             });
 
@@ -102,7 +104,11 @@ router.post(
             if (user.status === 'REJECTED') {
                 return res.status(403).json({
                     error: 'Acesso negado',
-                    message: 'Seu cadastro foi rejeitado. Entre em contato com o administrador.'
+                    message: user.rejectionReason 
+                        ? `Seu cadastro foi rejeitado. Motivo: ${user.rejectionReason}` 
+                        : 'Seu cadastro foi rejeitado. Entre em contato com o administrador.',
+                    rejectionReason: user.rejectionReason,
+                    canReapply: true
                 });
             }
 
@@ -163,6 +169,41 @@ router.get('/me', authenticate, async (req: Request, res: Response) => {
  */
 router.post('/logout', (req: Request, res: Response) => {
     res.json({ message: 'Logout realizado com sucesso' });
+});
+
+/**
+ * POST /api/auth/reapply
+ * Permite que um usuário rejeitado solicite nova aprovação
+ */
+router.post('/reapply', authenticate, async (req: Request, res: Response) => {
+    try {
+        const userId = req.user!.userId;
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        if (user.status !== 'REJECTED') {
+            return res.status(400).json({ error: 'Apenas usuários rejeitados podem solicitar nova aprovação' });
+        }
+
+        // Resetar status para PENDING e limpar motivo de rejeição
+        await user.update({
+            status: 'PENDING',
+            rejectionReason: null,
+        });
+
+        const { password, ...userWithoutPassword } = user.get({ plain: true });
+
+        res.json({
+            message: 'Solicitação de aprovação enviada com sucesso! Aguarde análise do administrador.',
+            user: userWithoutPassword,
+        });
+    } catch (error) {
+        console.error('Erro ao solicitar nova aprovação:', error);
+        res.status(500).json({ error: 'Erro ao processar solicitação' });
+    }
 });
 
 export default router;

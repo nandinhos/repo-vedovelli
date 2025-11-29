@@ -5,6 +5,7 @@ import { CodeBlock } from './CodeBlock';
 import { ImageModal } from './ImageModal';
 import { CodeInsertionModal } from './CodeInsertionModal';
 import { permissions } from '../utils/permissions';
+import MarkdownViewer from './MarkdownViewer';
 
 interface ItemDetailProps {
   item: RepositoryItem;
@@ -148,7 +149,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
   };
 
   return (
-    <div className="bg-slate-50 dark:bg-gray-900 p-6 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
+    <div className="bg-gray-50 dark:bg-gray-900 p-6 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
       <ImageModal 
         isOpen={viewImage.isOpen} 
         imageUrl={viewImage.url} 
@@ -192,7 +193,9 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
           <div className="bg-transparent">
             <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Sobre este item</h4>
             <div className="prose max-w-none text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-                <p className="leading-relaxed text-base">{item.description}</p>
+                <div className="leading-relaxed text-base">
+                  <MarkdownViewer content={item.description} />
+                </div>
             </div>
           </div>
 
@@ -355,7 +358,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
                         placeholder={currentUser.status === 'APPROVED' ? "Escreva sua solução, dúvida ou feedback... (Cole uma imagem com Ctrl+V)" : "Aguardando aprovação para comentar"}
                         disabled={currentUser.status !== 'APPROVED'}
                         rows={showUrlInput || newCommentScreenshot ? 5 : 3}
-                        className="w-full p-4 bg-slate-50 dark:bg-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none text-sm disabled:cursor-not-allowed resize-none transition-all"
+                        className="w-full p-4 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 outline-none text-sm disabled:cursor-not-allowed resize-none transition-all"
                     />
                 </div>
 
@@ -426,7 +429,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
                 {/* URL Input Dropdown */}
                 {showUrlInput && (
                     <div className="mt-3 animate-fadeIn">
-                        <div className="flex items-center gap-2 bg-slate-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1 focus-within:border-indigo-400 focus-within:ring-1 focus-within:ring-indigo-400 transition-all">
+                        <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-1 focus-within:border-indigo-400 focus-within:ring-1 focus-within:ring-indigo-400 transition-all">
                             <LinkIcon size={14} className="text-gray-400 dark:text-gray-500" />
                             <input 
                                 type="url"
@@ -474,7 +477,7 @@ export const ItemDetail: React.FC<ItemDetailProps> = ({
                             value={editCommentText}
                             onChange={(e) => setEditCommentText(e.target.value)}
                             onPaste={(e) => handlePaste(e, true)}
-                            className="w-full h-48 p-4 bg-slate-50 dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none text-sm resize-none"
+                            className="w-full h-48 p-4 bg-gray-50 dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none text-sm resize-none"
                             placeholder="Edite seu comentário..."
                         />
                     </div>
