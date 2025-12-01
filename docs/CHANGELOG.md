@@ -16,8 +16,13 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - Syntax highlighting adaptado (Prism.js)
   - Transições suaves e ícones animados
 
+- **TASK-004: Preview Markdown em Tempo Real**
+  - Editor com suporte a Markdown
+  - Preview em tempo real (aba Preview)
+  - Toolbar de formatação
+  - Renderização segura com sanitização
+
 ### 🚧 Em Desenvolvimento
-- Preview markdown em tempo real
 
 ---
 
@@ -123,7 +128,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - [x] TASK-001: Sistema de Tags básico
 - [x] TASK-002: Favoritos/Bookmarks
 - [x] TASK-003: Dark Mode
-- [ ] TASK-004: Preview Markdown em Tempo Real
+- [x] TASK-004: Preview Markdown em Tempo Real
 
 ---
 

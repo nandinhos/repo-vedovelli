@@ -371,6 +371,6 @@ Atualmente, os campos de descrição e comentários aceitam apenas texto simples
 
 ---
 
-**Status:** ⏳ Pronta para desenvolvimento  
+**Status:** ✅ Concluída  
 **Responsável:** A definir  
 **Revisão:** Pendente
