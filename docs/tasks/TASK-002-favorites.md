@@ -783,5 +783,5 @@ const { favoriteIds, toggleFavorite } = useFavorites(currentUser.id);
 
 ---
 
-**Status:** 🚧 Em Desenvolvimento  
-**Próximo Passo:** Criar modelo Favorite.ts
+**Status:** ✅ Concluída  
+**Próximo Passo:** N/A

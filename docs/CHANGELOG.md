@@ -120,8 +120,8 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## Sprint 1 - Quick Wins (Planejado)
 
 ### ✨ Adicionado
-- [ ] TASK-001: Sistema de Tags básico
-- [ ] TASK-002: Favoritos/Bookmarks
+- [x] TASK-001: Sistema de Tags básico
+- [x] TASK-002: Favoritos/Bookmarks
 - [x] TASK-003: Dark Mode
 - [ ] TASK-004: Preview Markdown em Tempo Real
 
