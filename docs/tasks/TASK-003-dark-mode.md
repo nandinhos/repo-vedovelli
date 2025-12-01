@@ -2,7 +2,7 @@
 
 **Sprint:** 1 - Quick Wins  
 **Prioridade:** 🟡 Média  
-**Status:** 🚧 Em Desenvolvimento  
+**Status:** ✅ Concluído  
 **Estimativa:** 4-6 horas  
 **Responsável:** Time Vedovelli  
 **Dependências:** Nenhuma
@@ -337,40 +337,40 @@ export const CodeBlock = ({ code, language }) => {
 ## ✅ Critérios de Aceitação
 
 ### Funcionalidade:
-- [ ] Toggle dark/light mode funciona
-- [ ] Tema persiste no localStorage
-- [ ] Tema aplicado automaticamente ao carregar
-- [ ] Ícone muda (sol ↔ lua)
-- [ ] Detecção de preferência do sistema (opcional)
+- [x] Toggle dark/light mode funciona
+- [x] Tema persiste no localStorage
+- [x] Tema aplicado automaticamente ao carregar
+- [x] Ícone muda (sol ↔ lua)
+- [x] Detecção de preferência do sistema (opcional)
 
 ### UI/UX:
-- [ ] TODOS os componentes adaptados para dark mode
-- [ ] Contraste adequado em ambos os temas (WCAG AA)
-- [ ] Syntax highlighting funciona em ambos os temas
-- [ ] Transição suave entre temas (não pisca)
-- [ ] Cores consistentes em toda aplicação
-- [ ] Legibilidade mantida em dark mode
+- [x] TODOS os componentes adaptados para dark mode
+- [x] Contraste adequado em ambos os temas (WCAG AA)
+- [x] Syntax highlighting funciona em ambos os temas
+- [x] Transição suave entre temas (não pisca)
+- [x] Cores consistentes em toda aplicação
+- [x] Legibilidade mantida em dark mode
 
 ### Performance:
-- [ ] Troca de tema instantânea (< 100ms)
-- [ ] Sem flash de conteúdo ao carregar
-- [ ] Não causa re-render desnecessário
+- [x] Troca de tema instantânea (< 100ms)
+- [x] Sem flash de conteúdo ao carregar
+- [x] Não causa re-render desnecessário
 
 ### Componentes a Adaptar:
-- [ ] App.tsx (container principal)
-- [ ] Header/Navigation
-- [ ] Cards de itens
-- [ ] Modals (todos)
-- [ ] Forms (inputs, selects, textareas)
-- [ ] Buttons (todos os tipos)
-- [ ] CodeBlock (syntax highlighting)
-- [ ] ItemDetail
-- [ ] Comments
-- [ ] Tags (TagCloud, TagDisplay, TagInput)
-- [ ] FavoriteButton
-- [ ] UserProfileModal
-- [ ] ImageModal
-- [ ] Contacts
+- [x] App.tsx (container principal)
+- [x] Header/Navigation
+- [x] Cards de itens
+- [x] Modals (todos)
+- [x] Forms (inputs, selects, textareas)
+- [x] Buttons (todos os tipos)
+- [x] CodeBlock (syntax highlighting)
+- [x] ItemDetail
+- [x] Comments
+- [x] Tags (TagCloud, TagDisplay, TagInput)
+- [x] FavoriteButton
+- [x] UserProfileModal
+- [x] ImageModal
+- [x] Contacts
 
 ---
 
@@ -430,21 +430,21 @@ export const CodeBlock = ({ code, language }) => {
 - ✅ Prism.js (já instalado - syntax highlighting)
 
 ### Arquivos a Criar:
-- [ ] `hooks/useTheme.ts`
-- [ ] `components/ThemeToggle.tsx`
+- [x] `hooks/useTheme.ts`
+- [x] `components/ThemeToggle.tsx`
 
 ### Arquivos a Modificar:
-- [ ] `tailwind.config.js` (adicionar darkMode: 'class')
-- [ ] `App.tsx` (adicionar ThemeToggle e classes dark:)
-- [ ] `components/CodeBlock.tsx` (adaptar tema do Prism)
-- [ ] `components/ItemDetail.tsx` (classes dark:)
-- [ ] `components/UserProfileModal.tsx` (classes dark:)
-- [ ] `components/ImageModal.tsx` (classes dark:)
-- [ ] `components/CodeInsertionModal.tsx` (classes dark:)
-- [ ] `components/TagCloud.tsx` (classes dark:)
-- [ ] `components/TagInput.tsx` (classes dark:)
-- [ ] `components/TagDisplay.tsx` (classes dark:)
-- [ ] `components/FavoriteButton.tsx` (classes dark:)
+- [x] `tailwind.config.js` (adicionar darkMode: 'class')
+- [x] `App.tsx` (adicionar ThemeToggle e classes dark:)
+- [x] `components/CodeBlock.tsx` (adaptar tema do Prism)
+- [x] `components/ItemDetail.tsx` (classes dark:)
+- [x] `components/UserProfileModal.tsx` (classes dark:)
+- [x] `components/ImageModal.tsx` (classes dark:)
+- [x] `components/CodeInsertionModal.tsx` (classes dark:)
+- [x] `components/TagCloud.tsx` (classes dark:)
+- [x] `components/TagInput.tsx` (classes dark:)
+- [x] `components/TagDisplay.tsx` (classes dark:)
+- [x] `components/FavoriteButton.tsx` (classes dark:)
 
 ---
 
@@ -533,5 +533,5 @@ export const CodeBlock = ({ code, language }) => {
 
 ---
 
-**Status:** 🚧 Em Desenvolvimento  
-**Próximo Passo:** Criar hook useTheme e componente ThemeToggle
+**Status:** ✅ Concluído  
+**Próximo Passo:** N/A

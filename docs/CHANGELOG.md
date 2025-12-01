@@ -9,8 +9,14 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### ✨ Adicionado
+- **TASK-003: Dark Mode Completo**
+  - Toggle dark/light mode com persistência
+  - Adaptação de todos os componentes (12+)
+  - Syntax highlighting adaptado (Prism.js)
+  - Transições suaves e ícones animados
+
 ### 🚧 Em Desenvolvimento
-- Dark mode
 - Preview markdown em tempo real
 
 ---
@@ -116,7 +122,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### ✨ Adicionado
 - [ ] TASK-001: Sistema de Tags básico
 - [ ] TASK-002: Favoritos/Bookmarks
-- [ ] TASK-003: Dark Mode
+- [x] TASK-003: Dark Mode
 - [ ] TASK-004: Preview Markdown em Tempo Real
 
 ---
